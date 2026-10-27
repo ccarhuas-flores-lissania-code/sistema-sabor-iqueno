@@ -1,0 +1,3128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prototipo Profesional v2 - El Sabor Iqueño | Sistema de Gestion de Restaurantes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #900C3F;
+            --primary-dark: #580018;
+            --secondary: #1E293B;
+            --accent: #D4AF37;
+            --bg-canvas: #F8FAFC;
+            --sidebar-bg: #0F172A;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info: #3B82F6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--secondary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* ============ LOGIN ============ */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--sidebar-bg) 0%, #2A0E20 55%, var(--primary) 100%);
+            padding: 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 880px;
+            background: #FFFFFF;
+            border-radius: 20px;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.45);
+        }
+
+        .login-aside {
+            background: var(--sidebar-bg);
+            color: #F8FAFC;
+            padding: 34px 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .login-aside h2 { font-size: 1.5rem; font-weight: 800; }
+        .login-aside h2 span { color: var(--accent); }
+        .login-aside p { font-size: 0.85rem; color: #94A3B8; line-height: 1.6; margin-top: 10px; }
+
+        .login-feature {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 0.8rem;
+            color: #CBD5E1;
+            margin-top: 14px;
+        }
+
+        .login-feature i { color: var(--accent); margin-top: 3px; }
+
+        .demo-users { display: flex; flex-direction: column; gap: 8px; }
+
+        .demo-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 9px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            width: 100%;
+        }
+
+        .demo-user:hover { background: var(--primary); border-color: var(--primary); }
+        .demo-user .du-name { font-size: 0.82rem; font-weight: 700; }
+        .demo-user .du-role { font-size: 0.68rem; color: var(--accent); font-weight: 700; letter-spacing: 0.4px; }
+
+        .login-body { padding: 34px 32px; }
+
+        .login-body h3 { font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; }
+        .login-body > p { font-size: 0.8rem; color: #64748B; margin-bottom: 22px; }
+
+        .field { margin-bottom: 14px; }
+        .field label { display: block; font-size: 0.8rem; font-weight: 700; color: #64748B; margin-bottom: 5px; }
+        .field label .req { color: var(--danger); }
+
+        .login-body input, .field input, .field select, .field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--secondary);
+            background: #FFFFFF;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .field input:focus, .field select:focus, .field textarea:focus, .login-body input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(144,12,63,0.12);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--primary);
+            color: #FFFFFF;
+        }
+
+        .btn:hover { filter: brightness(0.93); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
+        .btn-block { width: 100%; }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .btn-warning { background: var(--warning); }
+        .btn-info { background: var(--info); }
+        .btn-secondary { background: #F1F5F9; color: #475569; border: 1px solid var(--border-color); }
+        .btn-sm { padding: 7px 12px; font-size: 0.78rem; border-radius: 7px; }
+
+        .login-error {
+            background: #FDE8E8;
+            color: var(--danger);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 14px;
+            display: none;
+        }
+
+        .login-note { font-size: 0.72rem; color: #94A3B8; margin-top: 14px; line-height: 1.5; }
+
+        /* ============ SIDEBAR NAVIGATION ============ */
+        .sidebar {
+            width: 268px;
+            background-color: var(--sidebar-bg);
+            color: #F8FAFC;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px 16px;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            overflow-y: auto;
+        }
+
+        .brand-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 16px;
+        }
+
+        .brand-box i { font-size: 1.8rem; color: var(--accent); }
+        .brand-box h2 { font-size: 1.05rem; font-weight: 700; }
+        .brand-box p { font-size: 0.66rem; color: var(--accent); letter-spacing: 0.4px; }
+
+        .nav-section-title {
+            font-size: 0.6rem;
+            letter-spacing: 1.1px;
+            color: #64748B;
+            font-weight: 800;
+            padding: 12px 16px 6px;
+        }
+
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item:hover, .nav-item.active { background-color: var(--primary); color: #FFFFFF; }
+        .nav-item i { width: 18px; text-align: center; font-size: 1rem; }
+        .nav-item .nav-label { flex: 1; }
+        .nav-item.hidden { display: none; }
+
+        .nav-badge {
+            background: var(--danger);
+            color: #FFFFFF;
+            font-size: 0.62rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 20px;
+        }
+
+        .nav-badge.hidden { display: none; }
+
+        .sidebar-user {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 14px;
+            margin-top: 14px;
+        }
+
+        .su-row { display: flex; align-items: center; gap: 10px; }
+        .su-avatar {
+            width: 36px; height: 36px; border-radius: 10px;
+            background: var(--primary); color: #FFFFFF;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.8rem;
+        }
+        .su-name { font-size: 0.8rem; font-weight: 700; }
+        .su-role { font-size: 0.65rem; color: var(--accent); font-weight: 700; letter-spacing: 0.4px; }
+        .su-meta { font-size: 0.62rem; color: #64748B; margin-top: 8px; line-height: 1.6; }
+        .su-logout {
+            margin-top: 10px; width: 100%;
+            background: rgba(255,255,255,0.08);
+            color: #CBD5E1;
+            border: 1px solid rgba(255,255,255,0.12);
+            padding: 7px;
+            border-radius: 8px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .su-logout:hover { background: var(--danger); color: #FFFFFF; }
+
+        /* ============ MAIN CANVAS ============ */
+        .main-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+        .top-navbar {
+            background: #FFFFFF;
+            padding: 14px 26px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .top-navbar h1 { font-size: 1.1rem; font-weight: 700; color: var(--secondary); }
+        .nav-hamburger { display: none; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--secondary); }
+
+        .top-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+
+        .system-status {
+            background: #DEF7EC;
+            color: var(--success);
+            padding: 6px 13px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-user-chip {
+            display: flex; align-items: center; gap: 8px;
+            background: #F1F5F9; border: 1px solid var(--border-color);
+            padding: 5px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;
+        }
+
+        .content-body { flex: 1; padding: 22px 26px; overflow-y: auto; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.18s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+        /* ============ GENERIC UI ============ */
+        .page-head {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            gap: 14px; margin-bottom: 18px; flex-wrap: wrap;
+        }
+        .page-head h2 { font-size: 1.15rem; font-weight: 800; }
+        .page-head p { font-size: 0.82rem; color: #64748B; margin-top: 4px; }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .card-title {
+            font-size: 1rem; font-weight: 800; margin-bottom: 14px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
+
+        .subtabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+
+        .subtab {
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subtab.active { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
+
+        .badge {
+            font-size: 0.65rem; font-weight: 800; padding: 4px 9px;
+            border-radius: 20px; text-transform: uppercase; letter-spacing: 0.3px;
+            display: inline-flex; align-items: center; gap: 5px;
+        }
+        .badge-ok { background: #DEF7EC; color: #047857; }
+        .badge-warn { background: #FEF3C7; color: #B45309; }
+        .badge-danger { background: #FDE8E8; color: #B91C1C; }
+        .badge-info { background: #DBEAFE; color: #1D4ED8; }
+        .badge-neutral { background: #F1F5F9; color: #475569; }
+        .badge-purple { background: #F3E8FF; color: #7E22CE; }
+
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+        .data-table th {
+            text-align: left; font-size: 0.66rem; letter-spacing: 0.6px;
+            color: #64748B; font-weight: 800; text-transform: uppercase;
+            padding: 9px 10px; border-bottom: 2px solid var(--border-color); white-space: nowrap;
+        }
+        .data-table td { padding: 10px; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+        .data-table tbody tr:hover { background: #F8FAFC; }
+        .data-table .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .table-wrap { overflow-x: auto; }
+
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 18px; }
+
+        .kpi-card {
+            background: #FFFFFF; border: 1px solid var(--border-color);
+            border-radius: 14px; padding: 16px; position: relative; overflow: hidden;
+        }
+        .kpi-card .kpi-label { font-size: 0.68rem; color: #64748B; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; }
+        .kpi-card .kpi-value { font-size: 1.6rem; font-weight: 800; margin-top: 6px; color: var(--secondary); font-variant-numeric: tabular-nums; }
+        .kpi-card .kpi-foot { font-size: 0.7rem; color: #94A3B8; margin-top: 4px; }
+        .kpi-card .kpi-icon {
+            position: absolute; right: 12px; top: 12px;
+            width: 32px; height: 32px; border-radius: 9px;
+            display: flex; align-items: center; justify-content: center; font-size: 0.9rem;
+        }
+        .kpi-accent-ok { background: #DEF7EC; color: #047857; }
+        .kpi-accent-warn { background: #FEF3C7; color: #B45309; }
+        .kpi-accent-danger { background: #FDE8E8; color: #B91C1C; }
+        .kpi-accent-info { background: #DBEAFE; color: #1D4ED8; }
+        .kpi-accent-primary { background: #FCE7F3; color: var(--primary); }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 0.8rem; }
+        .bar-row .bar-label { width: 128px; color: #475569; font-weight: 600; flex-shrink: 0; }
+        .bar-track { flex: 1; background: #F1F5F9; height: 22px; border-radius: 6px; overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #BE185D); border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: #FFFFFF; font-size: 0.68rem; font-weight: 800; }
+        .bar-fill.fill-ok { background: linear-gradient(90deg, #059669, var(--success)); }
+        .bar-fill.fill-warn { background: linear-gradient(90deg, #D97706, var(--warning)); }
+        .bar-fill.fill-danger { background: linear-gradient(90deg, #DC2626, var(--danger)); }
+        .bar-row .bar-value { width: 76px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+        .empty-state { text-align: center; color: #94A3B8; font-size: 0.82rem; padding: 26px 10px; }
+        .empty-state i { font-size: 1.6rem; display: block; margin-bottom: 8px; color: #CBD5E1; }
+
+        .inline-note {
+            background: #EBF8FF; border: 1px solid #BEE3F8; padding: 10px 12px;
+            border-radius: 8px; font-size: 0.8rem; color: #2B6CB0;
+            display: flex; gap: 8px; align-items: flex-start;
+        }
+        .inline-note.warn { background: #FFFBEB; border-color: #FDE68A; color: #B45309; }
+        .inline-note.danger { background: #FEF2F2; border-color: #FECACA; color: #B91C1C; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+        .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 14px; flex-wrap: wrap; }
+        .input-sm { padding: 6px 9px !important; font-size: 0.78rem !important; }
+        .filter-bar { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 14px; }
+        .filter-bar .field { margin-bottom: 0; min-width: 130px; }
+
+        /* ============ TABLES GRID (9 Mesas) ============ */
+        .tables-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+        .table-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 18px;
+            border: 2px solid var(--border-color);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            position: relative;
+        }
+
+        .table-box:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
+        .table-box.occupied { border-color: var(--danger); background: #FFF5F5; }
+        .table-box.ready-pay { border-color: var(--warning); background: #FFFBEB; }
+        .table-box.reserved { border-color: var(--info); background: #EFF6FF; }
+        .table-box.disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+        .table-header-card { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .table-name { font-size: 1.1rem; font-weight: 800; color: var(--secondary); }
+        .table-meta { font-size: 0.75rem; color: #64748B; }
+        .table-total { font-size: 0.9rem; font-weight: 800; color: var(--secondary); margin-top: 8px; }
+
+        .badge-libre { background: #DEF7EC; color: var(--success); }
+        .badge-ocupada { background: #FDE8E8; color: var(--danger); }
+        .badge-cuenta { background: #FEF3C7; color: var(--warning); }
+        .badge-reservada { background: #DBEAFE; color: var(--info); }
+
+        /* ============ MESERO / ORDER BUILDER ============ */
+        .waiter-view { display: grid; grid-template-columns: 1fr 400px; gap: 20px; align-items: start; }
+
+        .menu-selection-card, .order-summary-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .order-summary-card { position: sticky; top: 0; }
+
+        .menu-items-list { display: flex; flex-direction: column; gap: 10px; }
+
+        .menu-item-row {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-item-row.selected { border-color: var(--primary); background: #FDF2F8; }
+        .item-info h4 { font-size: 0.9rem; font-weight: 700; color: var(--secondary); }
+        .item-info span { font-size: 0.78rem; color: var(--primary); font-weight: 700; }
+        .item-note { font-size: 0.72rem; color: #64748B; margin-top: 5px; }
+        .item-note input { padding: 5px 8px; font-size: 0.74rem; }
+
+        .qty-box { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+        .btn-qty {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: #FFFFFF;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 0.95rem;
+            color: var(--secondary);
+        }
+        .btn-qty:hover { background: var(--primary); color: #FFFFFF; border-color: var(--primary); }
+        .qty-num { font-weight: 800; width: 22px; text-align: center; font-size: 0.9rem; }
+
+        .summary-items { display: flex; flex-direction: column; gap: 9px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; max-height: 240px; overflow-y: auto; }
+        .summary-row { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; }
+        .summary-row .sr-name { flex: 1; }
+        .summary-row .sr-note { font-size: 0.68rem; color: #B45309; display: block; }
+
+        .total-line { display: flex; justify-content: space-between; font-size: 1.15rem; font-weight: 800; color: var(--primary); }
+
+        /* ============ KDS KITCHEN VIEW ============ */
+        .kds-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; height: 100%; }
+
+        .kds-column {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .kds-col-header {
+            padding: 14px 16px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .kds-cards-wrapper { flex: 1; padding: 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; background: #F8FAFC; }
+
+        .kds-ticket-item {
+            background: #FFFFFF;
+            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--success);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .kds-ticket-item.t-warn { border-left-color: var(--warning); }
+        .kds-ticket-item.t-danger { border-left-color: var(--danger); }
+        .kds-ticket-item.t-info { border-left-color: var(--info); }
+        .kds-ticket-item.t-ok { border-left-color: var(--success); }
+
+        .kds-ticket-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .kds-ticket-head .kt-label { font-weight: 800; font-size: 0.95rem; }
+        .kt-chip { font-size: 0.68rem; font-weight: 800; padding: 3px 8px; border-radius: 20px; white-space: nowrap; }
+        .kt-chip.chip-ok { background: #DEF7EC; color: #047857; }
+        .kt-chip.chip-warn { background: #FEF3C7; color: #B45309; }
+        .kt-chip.chip-danger { background: #FDE8E8; color: #B91C1C; }
+
+        .kds-items { list-style: none; font-size: 0.85rem; color: #334155; line-height: 1.6; }
+        .kds-items li { border-bottom: 1px dashed #EEF2F7; padding: 3px 0; }
+        .kds-items li:last-child { border-bottom: none; }
+        .kds-note { font-size: 0.7rem; color: #B45309; font-weight: 700; }
+        .kds-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .kds-actions .btn { flex: 1; }
+
+        /* ============ CAJERO ============ */
+        .cashier-layout { display: grid; grid-template-columns: 1fr 430px; gap: 20px; align-items: start; }
+
+        .payment-options { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+
+        .pay-method-btn {
+            background: #FFFFFF;
+            border: 2px solid var(--border-color);
+            padding: 14px 8px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .pay-method-btn i { display: block; font-size: 1.1rem; margin-bottom: 6px; color: #64748B; }
+        .pay-method-btn.active { border-color: var(--success); background: #DEF7EC; color: #047857; }
+        .pay-method-btn.active i { color: #047857; }
+
+        .cuenta-line { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; padding: 5px 0; }
+        .cuenta-line.total-line { border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 8px; font-size: 1.15rem; }
+
+        .split-part { border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+        .split-part.paid { background: #F0FDF4; border-color: #BBF7D0; }
+        .split-part-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+
+        /* ============ COMPROBANTE ============ */
+        .comprobante {
+            background: #FFFFFF;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 0.8rem;
+            color: #334155;
+            text-align: center;
+        }
+        .comprobante h4 { font-size: 0.95rem; font-weight: 800; color: var(--secondary); }
+        .comp-num { font-size: 0.85rem; font-weight: 800; color: var(--primary); margin: 6px 0; }
+        .comp-meta { text-align: left; font-size: 0.72rem; color: #64748B; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 8px 0; margin: 10px 0; }
+        .comp-qr {
+            width: 88px; height: 88px; margin: 10px auto 6px;
+            background-image: linear-gradient(45deg, #0F172A 25%, transparent 25%, transparent 75%, #0F172A 75%),
+                              linear-gradient(45deg, #0F172A 25%, transparent 25%, transparent 75%, #0F172A 75%);
+            background-size: 16px 16px;
+            background-position: 0 0, 8px 8px;
+            border: 4px solid #FFFFFF;
+            outline: 1px solid var(--border-color);
+        }
+        .comp-totals { text-align: left; font-size: 0.78rem; margin-top: 8px; }
+        .comp-totals div { display: flex; justify-content: space-between; padding: 2px 0; }
+        .comp-totals .grand { font-weight: 800; font-size: 0.9rem; color: var(--primary); border-top: 1px dashed var(--border-color); padding-top: 6px; margin-top: 4px; }
+
+        /* ============ MODAL / TOAST / DRAWER ============ */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            padding: 26px;
+            border-radius: 16px;
+            width: 430px;
+            max-width: 100%;
+            max-height: 88vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .modal-card.wide { width: 620px; }
+        .modal-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
+        .modal-card h3 .ok { color: var(--success); }
+        .modal-card h3 .err { color: var(--danger); }
+        .modal-card h3 .warn { color: var(--warning); }
+        .modal-card p { font-size: 0.86rem; color: #475569; margin-bottom: 18px; line-height: 1.55; }
+        .modal-footer { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; margin-top: 18px; }
+
+        .toast-stack { position: fixed; top: 16px; right: 16px; z-index: 1500; display: flex; flex-direction: column; gap: 8px; }
+
+        .toast {
+            background: #FFFFFF;
+            border-left: 5px solid var(--info);
+            border-radius: 10px;
+            padding: 12px 16px;
+            box-shadow: 0 10px 20px -8px rgba(0,0,0,0.25);
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--secondary);
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            min-width: 240px;
+            max-width: 340px;
+            animation: slideIn 0.2s ease;
+        }
+        .toast.t-ok { border-left-color: var(--success); }
+        .toast.t-err { border-left-color: var(--danger); }
+        .toast.t-warn { border-left-color: var(--warning); }
+        .toast i { font-size: 1rem; }
+
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+
+        /* ============ RESPONSIVE (tablets 8"-10") ============ */
+        @media (max-width: 1280px) {
+            .waiter-view, .cashier-layout { grid-template-columns: 1fr; }
+            .order-summary-card { position: static; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 980px) {
+            .sidebar { position: fixed; z-index: 900; height: 100%; transform: translateX(-100%); transition: transform 0.25s ease; }
+            .sidebar.open { transform: none; }
+            .nav-hamburger { display: block; }
+            .kds-container { grid-template-columns: 1fr; }
+            .tables-grid { grid-template-columns: repeat(2, 1fr); }
+            .top-navbar h1 { font-size: 0.9rem; }
+            .login-card { grid-template-columns: 1fr; }
+            .login-aside { display: none; }
+        }
+
+        @media (max-width: 620px) {
+            .tables-grid { grid-template-columns: 1fr; }
+            .content-body { padding: 14px; }
+        }
+
+        #print-area { display: none; }
+
+        @media print {
+            body > *:not(#print-area) { display: none !important; }
+            #print-area { display: block; padding: 0; }
+        }
+    </style>
+</head>
+<body>
+<!-- ================= LOGIN (RF14 / RNF04) ================= -->
+<div class="login-screen" id="login-screen">
+    <div class="login-card">
+        <div class="login-aside">
+            <div>
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:22px;">
+                    <i class="fa-solid fa-utensils" style="font-size:1.8rem; color:var(--accent);"></i>
+                    <div>
+                        <h2>El Sabor <span>Iqueño</span></h2>
+                        <p style="margin:0; font-size:0.66rem; color:var(--accent); letter-spacing:0.6px;">SISTEMA DE GESTION DE RESTAURANTES</p>
+                    </div>
+                </div>
+                <p>Comanda digital, KDS en cocina, facturacion automatica e inventario sincronizado en una sola plataforma.</p>
+            </div>
+            <div>
+                <div class="nav-section-title" style="padding:0 0 6px;">USUARIOS DE DEMOSTRACION</div>
+                <div class="demo-users" id="demo-users"></div>
+            </div>
+        </div>
+
+        <div class="login-body">
+            <h3>Iniciar sesion</h3>
+            <p>El acceso se registra en la bitacora de auditoria (RF15).</p>
+
+            <div class="login-error" id="login-error"></div>
+
+            <div class="field">
+                <label>Correo electronico <span class="req">*</span></label>
+                <input type="email" id="login-email" placeholder="usuario@saboriqueno.pe" autocomplete="off">
+            </div>
+            <div class="field">
+                <label>Contrasena <span class="req">*</span></label>
+                <input type="password" id="login-password" placeholder="******" autocomplete="off">
+            </div>
+
+            <button class="btn btn-block" data-action="do-login"><i class="fa-solid fa-right-to-bracket"></i> Ingresar al Sistema</button>
+
+            <p class="login-note">
+                <i class="fa-solid fa-shield-halved"></i> Contrasena de demostracion: <strong>1234</strong>. En produccion las credenciales se almacenan como hash Argon2id (<code>password_hash</code>), nunca en texto plano.
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ================= APLICACION ================= -->
+<div id="app" style="display:none; flex:1;">
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar" id="sidebar">
+        <div>
+            <div class="brand-box">
+                <i class="fa-solid fa-utensils"></i>
+                <div>
+                    <h2>El Sabor Iqueño</h2>
+                    <p>Sistema de Restaurante</p>
+                </div>
+            </div>
+
+            <div class="nav-section-title">OPERACION</div>
+            <ul class="nav-menu">
+                <li><button class="nav-item active" data-action="switch-tab" data-tab="mesero"><i class="fa-solid fa-tablet-screen-button"></i> <span class="nav-label">Modulo Mesero (9 Mesas / Llevar)</span></button></li>
+                <li><button class="nav-item" data-action="switch-tab" data-tab="cocina"><i class="fa-solid fa-fire-burner"></i> <span class="nav-label">Modulo Cocina (KDS en Vivo)</span> <span class="nav-badge hidden" id="badge-kds">0</span></button></li>
+                <li><button class="nav-item" data-action="switch-tab" data-tab="cajero"><i class="fa-solid fa-cash-register"></i> <span class="nav-label">Modulo Cajero y Facturacion</span></button></li>
+            </ul>
+
+            <div class="nav-section-title">GESTION</div>
+            <ul class="nav-menu">
+                <li><button class="nav-item" data-action="switch-tab" data-tab="inventario"><i class="fa-solid fa-boxes-stacked"></i> <span class="nav-label">Inventario, Compras y Kardex</span> <span class="nav-badge hidden" id="badge-stock">0</span></button></li>
+                <li><button class="nav-item" data-action="switch-tab" data-tab="reportes"><i class="fa-solid fa-chart-pie"></i> <span class="nav-label">Reportes Gerenciales</span></button></li>
+            </ul>
+
+            <div class="nav-section-title">ADMINISTRACION</div>
+            <ul class="nav-menu">
+                <li><button class="nav-item" data-action="switch-tab" data-tab="admin"><i class="fa-solid fa-user-shield"></i> <span class="nav-label">Usuarios, Roles y Auditoria</span></button></li>
+            </ul>
+        </div>
+
+        <div class="sidebar-user">
+            <div class="su-row">
+                <div class="su-avatar" id="su-avatar">AD</div>
+                <div>
+                    <div class="su-name" id="su-name">Usuario</div>
+                    <div class="su-role" id="su-role">ROL</div>
+                </div>
+            </div>
+            <div class="su-meta" id="su-meta">Ultimo acceso: --</div>
+            <button class="su-logout" data-action="do-logout"><i class="fa-solid fa-power-off"></i> Cerrar sesion</button>
+        </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="main-container">
+        <div class="top-navbar">
+            <div style="display:flex; align-items:center; gap:12px; min-width:0;">
+                <button class="nav-hamburger" data-action="toggle-sidebar"><i class="fa-solid fa-bars"></i></button>
+                <h1 id="nav-title">Módulo Mesero - Selección de Mesa o Pedido Para Llevar</h1>
+            </div>
+            <div class="top-right">
+                <div class="system-status">
+                    <i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> PostgreSQL Sincronizado
+                </div>
+                <div class="top-user-chip" id="top-user-chip">
+                    <i class="fa-solid fa-user"></i> <span id="top-user-name">Usuario</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-body">
+
+            <!-- ============ PANEL 1: MESERO ============ -->
+            <div id="panel-mesero" class="tab-panel active">
+
+                <div id="view-tables-selector">
+                    <div class="page-head">
+                        <div>
+                            <h2>Salon - Seleccion de Mesa</h2>
+                            <p>Seleccione una mesa del salon o registre un pedido para llevar. El estado se actualiza en tiempo real con el KDS.</p>
+                        </div>
+                        <button class="btn" data-action="open-takeaway"><i class="fa-solid fa-bag-shopping"></i> + Nuevo Pedido Para Llevar</button>
+                    </div>
+
+                    <div class="tables-grid" id="nine-tables-grid"></div>
+
+                    <div class="card" style="margin-top:18px;">
+                        <div class="card-title"><span>Pedidos Para Llevar Activos</span><span class="badge badge-neutral" id="tw-count-badge">0</span></div>
+                        <div id="mesero-takeaway-list"></div>
+                    </div>
+                </div>
+
+                <div id="view-order-builder" style="display:none;">
+                    <div class="waiter-view">
+                        <div class="menu-selection-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <h3 id="order-target-title" style="font-size:1.1rem; font-weight:800; color:var(--secondary);">Registrando Pedido: Mesa 01</h3>
+                                <div style="display:flex; gap:8px;">
+                                    <button class="btn btn-secondary btn-sm" data-action="open-comandas" id="btn-ver-comandas"><i class="fa-solid fa-receipt"></i> Comandas (0)</button>
+                                    <button class="btn btn-secondary btn-sm" data-action="back-to-tables"><i class="fa-solid fa-arrow-left"></i> Cambiar Mesa / Volver</button>
+                                </div>
+                            </div>
+
+                            <div class="inline-note" id="order-note-box">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <span>Seleccione la cantidad de platos y bebidas solicitados por el cliente. Al confirmar la comanda, el stock se descuenta automaticamente del inventario (RF09).</span>
+                            </div>
+
+                            <div class="subtabs" id="menu-categories"></div>
+
+                            <div class="menu-items-list" id="full-menu-list"></div>
+                        </div>
+
+                        <div class="order-summary-card">
+                            <h3 style="font-size:1rem; font-weight:800; border-bottom:1px solid var(--border-color); padding-bottom:10px;">Resumen del Pedido</h3>
+
+                            <div id="client-name-container" style="display:none;">
+                                <div class="field">
+                                    <label>Nombre del Cliente (Para Llevar): <span class="req" style="color:var(--danger);">*</span></label>
+                                    <input type="text" id="input-client-name" placeholder="Ej. Carlos Mendoza">
+                                </div>
+                            </div>
+
+                            <div class="summary-items" id="summary-items-list"></div>
+
+                            <div style="border-top:1px solid var(--border-color); padding-top:12px;">
+                                <div class="total-line" style="margin-bottom:14px;">
+                                    <span>Total a Pagar:</span>
+                                    <span id="summary-total">S/ 0.00</span>
+                                </div>
+                                <button class="btn btn-success btn-block" data-action="send-order" id="btn-send-order">
+                                    <i class="fa-solid fa-paper-plane"></i> Enviar Pedido a Cocina
+                                </button>
+                                <button class="btn btn-secondary btn-block btn-sm" style="margin-top:8px;" data-action="clear-selection">
+                                    <i class="fa-solid fa-eraser"></i> Limpiar seleccion
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ PANEL 2: COCINA KDS ============ -->
+            <div id="panel-cocina" class="tab-panel">
+                <div class="page-head">
+                    <div>
+                        <h2>Kitchen Display System (KDS)</h2>
+                        <p>Comandas ordenadas por tiempo de espera. <span style="color:#047857; font-weight:700;">Verde &lt; 10 min</span> / <span style="color:#B45309; font-weight:700;">Amarillo 10-20 min</span> / <span style="color:#B91C1C; font-weight:700;">Rojo &gt; 20 min</span>.</p>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary btn-sm" data-action="refresh"><i class="fa-solid fa-rotate"></i> Actualizar</button>
+                        <button class="btn btn-secondary btn-sm" data-action="print-comandas"><i class="fa-solid fa-print"></i> Imprimir comanda del dia</button>
+                    </div>
+                </div>
+
+                <div class="kds-container">
+                    <div class="kds-column">
+                        <div class="kds-col-header" style="background:#FEF3C7; color:#B45309;">
+                            <span>1. Pedidos Pendientes</span><span class="badge badge-warn" id="count-pend">0</span>
+                        </div>
+                        <div class="kds-cards-wrapper" id="kds-col-pendientes"></div>
+                    </div>
+
+                    <div class="kds-column">
+                        <div class="kds-col-header" style="background:#DBEAFE; color:#1D4ED8;">
+                            <span>2. En Preparacion</span><span class="badge badge-info" id="count-prep">0</span>
+                        </div>
+                        <div class="kds-cards-wrapper" id="kds-col-prep"></div>
+                    </div>
+
+                    <div class="kds-column">
+                        <div class="kds-col-header" style="background:#DEF7EC; color:#047857;">
+                            <span>3. Listos para Entregar</span><span class="badge badge-ok" id="count-ready">0</span>
+                        </div>
+                        <div class="kds-cards-wrapper" id="kds-col-ready"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ PANEL 3: CAJERO ============ -->
+            <div id="panel-cajero" class="tab-panel">
+                <div class="page-head">
+                    <div>
+                        <h2>Cajero y Facturacion</h2>
+                        <p>La cuenta se consolida automaticamente desde las comandas enviadas por los mozos (RF05).</p>
+                    </div>
+                    <div class="inline-note" style="max-width:340px;">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>Con RUC se emite <strong>Factura</strong>; sin RUC se emite <strong>Boleta</strong> (RF07).</span>
+                    </div>
+                </div>
+
+                <div class="cashier-layout">
+                    <div class="card">
+                        <div class="card-title"><span>Seleccione la Mesa o Pedido Para Llevar a Cobrar</span><span class="badge badge-neutral" id="cashier-open-count">0 cuentas abiertas</span></div>
+
+                        <p style="font-size:0.78rem; font-weight:800; color:#64748B; margin-bottom:8px;">Mesas del Salon (1 al 9):</p>
+                        <div class="tables-grid" id="cashier-tables-grid" style="margin-bottom:20px;"></div>
+
+                        <p style="font-size:0.78rem; font-weight:800; color:#64748B; margin-bottom:8px;">Pedidos Para Llevar Listos:</p>
+                        <div id="cashier-takeaway-list" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
+
+                    <div class="card" id="cashier-detail-panel">
+                        <div class="card-title"><span id="cashier-title-panel">Detalle de Cuenta</span><span class="badge badge-neutral" id="cashier-comanda-count">0 comandas</span></div>
+
+                        <div id="cashier-items-summary" style="font-size:0.85rem; color:#64748B;">
+                            Seleccione una mesa o pedido para llevar activo.
+                        </div>
+
+                        <div id="cashier-split-area" style="margin-top:12px;"></div>
+
+                        <div style="margin-top:14px;">
+                            <p style="font-size:0.78rem; font-weight:800; color:#64748B; margin-bottom:6px;">Datos del Comprobante</p>
+                            <div class="form-grid">
+                                <div class="field">
+                                    <label>Numero de RUC (11 digitos):</label>
+                                    <input type="text" id="input-ruc" placeholder="Ej. 20601234567" maxlength="11" class="input-sm">
+                                </div>
+                                <div class="field">
+                                    <label>Razon Social:</label>
+                                    <input type="text" id="input-razon" placeholder="Cliente S.A.C." class="input-sm">
+                                </div>
+                            </div>
+                            <div class="field" id="ruc-error" style="display:none;">
+                                <span style="font-size:0.75rem; color:var(--danger); font-weight:600;">El RUC debe tener 11 digitos numericos.</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p style="font-size:0.78rem; font-weight:800; color:#64748B; margin-bottom:6px;">Metodo de Pago:</p>
+                            <div class="payment-options" id="payment-options">
+                                <div class="pay-method-btn active" data-action="select-paymethod" data-method="efectivo"><i class="fa-solid fa-money-bill-wave"></i> Efectivo</div>
+                                <div class="pay-method-btn" data-action="select-paymethod" data-method="tarjeta"><i class="fa-solid fa-credit-card"></i> Tarjeta</div>
+                                <div class="pay-method-btn" data-action="select-paymethod" data-method="digital"><i class="fa-solid fa-qrcode"></i> Digital</div>
+                            </div>
+                        </div>
+
+                        <div id="cashier-cobro-extra"></div>
+
+                        <div style="border-top:1px solid var(--border-color); margin-top:12px; padding-top:12px;">
+                            <div class="total-line">
+                                <span>Total Consumo:</span>
+                                <span id="cashier-total-amount">S/ 0.00</span>
+                            </div>
+                            <button class="btn btn-success btn-block" style="margin-top:14px;" data-action="process-payment" id="btn-process-pay" disabled>
+                                <i class="fa-solid fa-file-invoice"></i> Registrar Pago y Emitir Comprobante
+                            </button>
+                            <button class="btn btn-secondary btn-block btn-sm" style="margin-top:8px;" data-action="open-split" id="btn-split" disabled>
+                                <i class="fa-solid fa-people-arrows-left-right"></i> Dividir cuenta entre comensales (RF06)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ PANEL 4: INVENTARIO ============ -->
+            <div id="panel-inventario" class="tab-panel">
+                <div class="page-head">
+                    <div>
+                        <h2>Inventario, Compras y Kardex</h2>
+                        <p>Control de stock sincronizado con cada transaccion: entradas por compra, salidas por comanda y ajustes por merma.</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" data-action="conciliar"><i class="fa-solid fa-scale-balanced"></i> Conciliar stock (RNF06)</button>
+                </div>
+
+                <div class="subtabs" id="inv-tabs">
+                    <button class="subtab active" data-action="inv-tab" data-sub="insumos"><i class="fa-solid fa-box"></i> Insumos</button>
+                    <button class="subtab" data-action="inv-tab" data-sub="compras"><i class="fa-solid fa-truck"></i> Registrar Compra (RF11)</button>
+                    <button class="subtab" data-action="inv-tab" data-sub="kardex"><i class="fa-solid fa-list-check"></i> Kardex / Movimientos</button>
+                </div>
+
+                <div id="inv-body"></div>
+            </div>
+
+            <!-- ============ PANEL 5: REPORTES ============ -->
+            <div id="panel-reportes" class="tab-panel">
+                <div class="page-head">
+                    <div>
+                        <h2>Reportes Gerenciales</h2>
+                        <p>Indicadores de exito del proyecto: tiempo de atencion, tasa de error y exactitud de inventario.</p>
+                    </div>
+                    <button class="btn btn-secondary btn-sm" data-action="export-reporte"><i class="fa-solid fa-file-csv"></i> Exportar CSV</button>
+                </div>
+
+                <div id="rep-body"></div>
+            </div>
+
+            <!-- ============ PANEL 6: ADMINISTRACION ============ -->
+            <div id="panel-admin" class="tab-panel">
+                <div class="page-head">
+                    <div>
+                        <h2>Administracion del Sistema</h2>
+                        <p>Usuarios y roles (RF13), personal y turnos, bitacora de auditoria (RF15) y mantenimiento de menu con recetas.</p>
+                    </div>
+                </div>
+
+                <div class="subtabs" id="adm-tabs">
+                    <button class="subtab active" data-action="adm-tab" data-sub="usuarios"><i class="fa-solid fa-users"></i> Usuarios y Roles</button>
+                    <button class="subtab" data-action="adm-tab" data-sub="personal"><i class="fa-solid fa-id-badge"></i> Personal y Turnos</button>
+                    <button class="subtab" data-action="adm-tab" data-sub="auditoria"><i class="fa-solid fa-clipboard-list"></i> Auditoria (RF15)</button>
+                    <button class="subtab" data-action="adm-tab" data-sub="menu"><i class="fa-solid fa-utensils"></i> Menu y Recetas</button>
+                </div>
+
+                <div id="adm-body"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal generico -->
+<div class="modal-overlay" id="app-modal">
+    <div class="modal-card" id="modal-card">
+        <h3 id="modal-title">Titulo</h3>
+        <div id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+    </div>
+</div>
+
+<div class="toast-stack" id="toast-stack"></div>
+<div id="print-area"></div>
+
+<script>
+'use strict';
+
+/* ================================================================
+   1. MODELO DE DATOS (espejo en memoria del esquema PostgreSQL)
+   ================================================================ */
+
+const ROLES = [
+    { id_rol: 'ADMIN',  nombre: 'ADMINISTRADOR', descripcion: 'Acceso total a operacion, gestion y administracion' },
+    { id_rol: 'MOZO',   nombre: 'MESERO',        descripcion: 'Toma de pedidos en salon y para llevar' },
+    { id_rol: 'COCINA', nombre: 'COCINA',        descripcion: 'Gestion de comandas en el KDS' },
+    { id_rol: 'CAJERO', nombre: 'CAJERO',        descripcion: 'Cobro, division de cuenta y emision de comprobante' }
+];
+
+const PERMISOS = {
+    ADMIN:  ['mesero', 'cocina', 'cajero', 'inventario', 'reportes', 'admin'],
+    MOZO:   ['mesero'],
+    COCINA: ['cocina'],
+    CAJERO: ['cajero']
+};
+
+function hashPass(p) {
+    let h = 5381;
+    for (let i = 0; i < p.length; i++) h = ((h << 5) + h) + p.charCodeAt(i);
+    return 'a2$' + (h >>> 0).toString(16) + '$' + p.length.toString(16);
+}
+
+const DB = {
+    rol: ROLES,
+    usuario: [
+        { id_usuario: 1, id_rol: 'ADMIN',  nombre: 'Jared',   apellido: 'Salazar',  email: 'jared.salazar@saboriqueno.pe', password_hash: hashPass('1234'), telefono: '956 112 233', activo: true, ultimo_login: null },
+        { id_usuario: 2, id_rol: 'MOZO',   nombre: 'Carlos',  apellido: 'Mendoza', email: 'mozo@saboriqueno.pe',          password_hash: hashPass('1234'), telefono: '956 112 244', activo: true, ultimo_login: null },
+        { id_usuario: 3, id_rol: 'MOZO',   nombre: 'Ana',     apellido: 'Reyes',    email: 'mozo2@saboriqueno.pe',         password_hash: hashPass('1234'), telefono: '956 112 255', activo: true, ultimo_login: null },
+        { id_usuario: 4, id_rol: 'COCINA', nombre: 'Rosa',    apellido: 'Quispe',   email: 'cocina@saboriqueno.pe',        password_hash: hashPass('1234'), telefono: '956 112 266', activo: true, ultimo_login: null },
+        { id_usuario: 5, id_rol: 'CAJERO', nombre: 'Luis',    apellido: 'Ramos',    email: 'cajero@saboriqueno.pe',        password_hash: hashPass('1234'), telefono: '956 112 277', activo: true, ultimo_login: null }
+    ],
+
+    mesa: [
+        { id_mesa: 1, numero: 1, capacidad: 4, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 2, numero: 2, capacidad: 4, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 3, numero: 3, capacidad: 6, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 4, numero: 4, capacidad: 4, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 5, numero: 5, capacidad: 8, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 6, numero: 6, capacidad: 2, ubicacion: 'Salon',   estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 7, numero: 7, capacidad: 4, ubicacion: 'Terraza', estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 8, numero: 8, capacidad: 6, ubicacion: 'Terraza', estado: 'LIBRE', reservada: false, activa: true },
+        { id_mesa: 9, numero: 9, capacidad: 2, ubicacion: 'Barra',   estado: 'LIBRE', reservada: false, activa: true }
+    ],
+
+    estado_pedido: [
+        { id: 'PENDIENTE',     nombre: 'Pendiente',     color: 'warn' },
+        { id: 'EN_PREPARACION', nombre: 'En preparacion', color: 'info' },
+        { id: 'LISTO',         nombre: 'Listo',          color: 'ok' },
+        { id: 'COBRADO',       nombre: 'Cobrado',        color: 'neutral' },
+        { id: 'ANULADO',       nombre: 'Anulado',        color: 'danger' }
+    ],
+
+    categoria_producto: [
+        { id_categoria_producto: 'TIPO', nombre: 'Plato Tipico' },
+        { id_categoria_producto: 'MAR',  nombre: 'Mariscos' },
+        { id_categoria_producto: 'CAR',  nombre: 'Carnes' },
+        { id_categoria_producto: 'BEB',  nombre: 'Bebidas' }
+    ],
+
+    producto: [
+        { id_producto: 'p1', id_categoria_producto: 'TIPO', nombre: 'Carapulcra con Sopa Seca', precio_venta: 32.00, descripcion: 'Res, pallares, camote y sopa seca tradicional', receta: [['i1', 0.25], ['i5', 0.08], ['i8', 0.15], ['i6', 0.10], ['i12', 0.05], ['i13', 0.03]] },
+        { id_producto: 'p2', id_categoria_producto: 'MAR',  nombre: 'Ceviche Mixto Iqueño',    precio_venta: 38.00, descripcion: 'Pescado fresco, limon y camote',            receta: [['i3', 0.30], ['i10', 0.15], ['i11', 0.08], ['i8', 0.20], ['i12', 0.03]] },
+        { id_producto: 'p3', id_categoria_producto: 'TIPO', nombre: 'Seco de Ica con Pallares', precio_venta: 34.00, descripcion: 'Clasico seco de res con pallares',           receta: [['i1', 0.25], ['i5', 0.10], ['i11', 0.06], ['i6', 0.10], ['i13', 0.03]] },
+        { id_producto: 'p4', id_categoria_producto: 'TIPO', nombre: 'Tacutacu con Lomo',       precio_venta: 24.00, descripcion: 'Arroz, papa, huevo y lomo saltado',          receta: [['i6', 0.20], ['i7', 0.15], ['i16', 1], ['i2', 0.15], ['i13', 0.02]] },
+        { id_producto: 'p5', id_categoria_producto: 'CAR',  nombre: 'Chicharron de Pota',      precio_venta: 18.00, descripcion: 'Chicharron criollo con camote',              receta: [['i2', 0.20], ['i8', 0.15], ['i13', 0.02]] },
+        { id_producto: 'p6', id_categoria_producto: 'TIPO', nombre: 'Chupe de Camarones',      precio_venta: 28.00, descripcion: 'Clasico chupe arequipeno',                   receta: [['i4', 0.20], ['i9', 0.05], ['i15', 1], ['i16', 1], ['i12', 0.04], ['i6', 0.08]] },
+        { id_producto: 'p7', id_categoria_producto: 'MAR',  nombre: 'Sudado de Pescadilla',   precio_venta: 36.00, descripcion: 'Pescado en su jugo con arroz',              receta: [['i3', 0.30], ['i6', 0.12], ['i11', 0.06], ['i12', 0.03], ['i13', 0.03]] },
+        { id_producto: 'p8', id_categoria_producto: 'MAR',  nombre: 'Arroz con Mariscos',      precio_venta: 30.00, descripcion: 'Arroz chaufa con camarones',                 receta: [['i6', 0.15], ['i4', 0.15], ['i3', 0.10], ['i12', 0.04], ['i13', 0.03]] },
+        { id_producto: 'b1', id_categoria_producto: 'BEB',  nombre: 'Pisco Sour Iqueño',       precio_venta: 18.00, descripcion: 'Pisco, limon y jarabe de la casa',           receta: [['i17', 0.07], ['i10', 0.05], ['i14', 0.02]] },
+        { id_producto: 'b2', id_categoria_producto: 'BEB',  nombre: 'Jarra de Chicha Morada',  precio_venta: 15.00, descripcion: 'Chicha morada de 1 litro',                   receta: [['i18', 0.30], ['i10', 0.05]] },
+        { id_producto: 'b3', id_categoria_producto: 'BEB',  nombre: 'Inka Kola 1 Litro',      precio_venta: 10.00, descripcion: 'Gaseosa personal de 1 litro',                receta: [['i19', 1]] }
+    ],
+
+    categoria_insumo: ['Proteinas', 'Mariscos', 'Granos y tuberculos', 'Frutas y verduras', 'Abarrotes', 'Condimentos', 'Bebidas'],
+
+    insumo: [
+        { id_insumo: 'i1',  nombre: 'Carne de res',            unidad: 'kg',  stock_actual: 18, stock_minimo: 6,  stock_inicial: 18, costo_unitario: 32.00, categoria: 'Proteinas' },
+        { id_insumo: 'i2',  nombre: 'Carne de pollo',          unidad: 'kg',  stock_actual: 14, stock_minimo: 5,  stock_inicial: 14, costo_unitario: 12.00, categoria: 'Proteinas' },
+        { id_insumo: 'i3',  nombre: 'Pescado fresco',          unidad: 'kg',  stock_actual: 24, stock_minimo: 8,  stock_inicial: 24, costo_unitario: 28.00, categoria: 'Mariscos' },
+        { id_insumo: 'i4',  nombre: 'Camarones fresco',        unidad: 'kg',  stock_actual: 9,  stock_minimo: 4,  stock_inicial: 9,  costo_unitario: 65.00, categoria: 'Mariscos' },
+        { id_insumo: 'i5',  nombre: 'Pallares',                unidad: 'kg',  stock_actual: 5,  stock_minimo: 1.5,stock_inicial: 5,  costo_unitario: 14.00, categoria: 'Granos y tuberculos' },
+        { id_insumo: 'i6',  nombre: 'Arroz',                   unidad: 'kg',  stock_actual: 26, stock_minimo: 10, stock_inicial: 26, costo_unitario: 5.00,  categoria: 'Granos y tuberculos' },
+        { id_insumo: 'i7',  nombre: 'Papa',                    unidad: 'kg',  stock_actual: 30, stock_minimo: 8,  stock_inicial: 30, costo_unitario: 3.00,  categoria: 'Granos y tuberculos' },
+        { id_insumo: 'i8',  nombre: 'Camote',                  unidad: 'kg',  stock_actual: 16, stock_minimo: 5,  stock_inicial: 16, costo_unitario: 2.50,  categoria: 'Granos y tuberculos' },
+        { id_insumo: 'i9',  nombre: 'Arveja seca',             unidad: 'kg',  stock_actual: 4,  stock_minimo: 1,  stock_inicial: 4,  costo_unitario: 8.00,  categoria: 'Granos y tuberculos' },
+        { id_insumo: 'i10', nombre: 'Limon',                   unidad: 'kg',  stock_actual: 7,  stock_minimo: 2,  stock_inicial: 7,  costo_unitario: 4.00,  categoria: 'Frutas y verduras' },
+        { id_insumo: 'i11', nombre: 'Cebolla roja',            unidad: 'kg',  stock_actual: 11, stock_minimo: 3,  stock_inicial: 11, costo_unitario: 3.50,  categoria: 'Frutas y verduras' },
+        { id_insumo: 'i12', nombre: 'Aji amarillo',            unidad: 'kg',  stock_actual: 2.2,stock_minimo: 1,  stock_inicial: 2.2,costo_unitario: 12.00, categoria: 'Condimentos' },
+        { id_insumo: 'i13', nombre: 'Aceite vegetal',          unidad: 'L',   stock_actual: 14, stock_minimo: 4,  stock_inicial: 14, costo_unitario: 9.00,  categoria: 'Condimentos' },
+        { id_insumo: 'i14', nombre: 'Azucar rubia',            unidad: 'kg',  stock_actual: 6,  stock_minimo: 2,  stock_inicial: 6,  costo_unitario: 4.00,  categoria: 'Abarrotes' },
+        { id_insumo: 'i15', nombre: 'Leche evaporada',        unidad: 'und', stock_actual: 34, stock_minimo: 12, stock_inicial: 34, costo_unitario: 1.80,  categoria: 'Abarrotes' },
+        { id_insumo: 'i16', nombre: 'Huevo',                   unidad: 'und', stock_actual: 70, stock_minimo: 24, stock_inicial: 70, costo_unitario: 0.90,  categoria: 'Abarrotes' },
+        { id_insumo: 'i17', nombre: 'Pisco',                   unidad: 'L',   stock_actual: 9,  stock_minimo: 2,  stock_inicial: 9,  costo_unitario: 45.00, categoria: 'Bebidas' },
+        { id_insumo: 'i18', nombre: 'Chicha morada concentrado', unidad: 'L', stock_actual: 12, stock_minimo: 4,  stock_inicial: 12, costo_unitario: 6.00,  categoria: 'Bebidas' },
+        { id_insumo: 'i19', nombre: 'Inka Kola 1L',            unidad: 'und', stock_actual: 48, stock_minimo: 12, stock_inicial: 48, costo_unitario: 3.50,  categoria: 'Bebidas' }
+    ],
+
+    proveedor: [
+        { id_proveedor: 1, razon_social: 'Distribuidora Agro-Pacifico S.A.C.', ruc: '20512345678', contacto: 'Ventas - 945 100 200' },
+        { id_proveedor: 2, razon_social: 'Marinex Peru S.A.C.',                ruc: '20498765432', contacto: 'Ventas - 945 100 201' },
+        { id_proveedor: 3, razon_social: 'Distribuidora La Esquina E.I.R.L.',   ruc: '20655511122', contacto: 'Ventas - 945 100 202' },
+        { id_proveedor: 4, razon_social: 'Bebidas del Sur S.A.C.',             ruc: '20333344455', contacto: 'Ventas - 945 100 203' }
+    ],
+
+    metodo_pago: [
+        { id: 'EFECTIVO', nombre: 'Efectivo' },
+        { id: 'TARJETA',  nombre: 'Tarjeta' },
+        { id: 'DIGITAL',  nombre: 'Digital (Yape / Plin)' }
+    ],
+
+    estado_pedido_historico: [],
+    pedido: [],
+    cuenta: [],
+    pago: [],
+    comprobante: [],
+    compra: [],
+    detalle_compra: [],
+    movimiento_inventario: [],
+    personal: [
+        { id_personal: 1, nombre: 'Carlos Mendoza', cargo: 'Mozo',      turno: 'TUR-T', activo: true },
+        { id_personal: 2, nombre: 'Ana Reyes',      cargo: 'Mozo',      turno: 'TUR-M', activo: true },
+        { id_personal: 3, nombre: 'Rosa Quispe',    cargo: 'Jefa de cocina', turno: 'TUR-M', activo: true },
+        { id_personal: 4, nombre: 'Jorge Flores',   cargo: 'Ayudante de cocina', turno: 'TUR-T', activo: true },
+        { id_personal: 5, nombre: 'Luis Ramos',     cargo: 'Cajero',    turno: 'TUR-M', activo: true },
+        { id_personal: 6, nombre: 'Mario Sanchez',  cargo: 'Administrador', turno: 'TUR-N', activo: true },
+        { id_personal: 7, nombre: 'Pedro Rojas',    cargo: 'Mozo',      turno: 'TUR-N', activo: true },
+        { id_personal: 8, nombre: 'Lucia Vega',     cargo: 'Ayudante de cocina', turno: 'TUR-T', activo: true }
+    ],
+
+    turno: [
+        { id_turno: 'TUR-M', nombre: 'Manana',  inicio: '06:00', fin: '14:00' },
+        { id_turno: 'TUR-T', nombre: 'Tarde',   inicio: '14:00', fin: '22:00' },
+        { id_turno: 'TUR-N', nombre: 'Noche',   inicio: '22:00', fin: '02:00' }
+    ],
+
+    auditoria: [],
+    seq: { pedido: 100, cuenta: 500, pago: 700, comprobante_boleta: 0, comprobante_factura: 0, compra: 300, movimiento: 1, usuario: 5 }
+};
+
+DB.insumo.forEach(ins => {
+    DB.movimiento_inventario.push({
+        id_movimiento: DB.seq.movimiento++,
+        fecha: daysAgo(30),
+        id_insumo: ins.id_insumo,
+        tipo: 'INICIAL',
+        cantidad: ins.stock_inicial,
+        saldo: ins.stock_inicial,
+        referencia: 'SALDO INICIAL DE APERTURA',
+        usuario: 'sistema'
+    });
+});
+
+/* ================================================================
+   2. UTILIDADES Y ESTADO DE LA SESION
+   ================================================================ */
+
+const state = {
+    session: null,
+    tab: 'mesero',
+    invTab: 'insumos',
+    admTab: 'usuarios',
+    categoriaMenu: 'TIPO',
+    orderTarget: null,
+    selection: {},
+    notas: {},
+    editPedidoId: null,
+    cashier: { tipo: null, id: null, metodo: 'EFECTIVO', partes: [], recibido: '' },
+    kardexFiltro: { insumo: '', tipo: '', desde: '', hasta: '' },
+    repTab: 'venta',
+    ipCliente: '192.168.1.24'
+};
+
+const $ = sel => document.querySelector(sel);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const round2 = n => Math.round((n + Number.EPSILON) * 100) / 100;
+const money = n => 'S/ ' + Number(round2(n)).toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const getRol = id => DB.rol.find(r => r.id_rol === id);
+const getProducto = id => DB.producto.find(p => p.id_producto === id);
+const getInsumo = id => DB.insumo.find(i => i.id_insumo === id);
+const getMesa = id => DB.mesa.find(m => m.id_mesa === id);
+const initials = u => (u.nombre[0] + u.apellido[0]).toUpperCase();
+
+function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); return d; }
+function timeStr(d) { return d.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' }); }
+function dateStr(d) { return d.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric' }); }
+function dateTimeStr(d) { return dateStr(d) + ' ' + timeStr(d); }
+function minutesSince(t) { return Math.max(0, Math.floor((Date.now() - new Date(t).getTime()) / 60000)); }
+
+function turnoDe(hora) {
+    const h = new Date(hora).getHours();
+    if (h >= 11 && h < 16) return { id: 'ALMUERZO', nombre: 'Almuerzo (11am-4pm)' };
+    if (h >= 16 && h < 21) return { id: 'TARDE', nombre: 'Tarde (4pm-9pm)' };
+    return { id: 'NOCHE', nombre: 'Noche (9pm-)' };
+}
+
+function escapeHtml(str) {
+    return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+/* ================================================================
+   3. BITACORA DE AUDITORIA (RF15) Y NOTIFICACIONES
+   ================================================================ */
+
+function logAudit(accion, entidad, detalle) {
+    const u = state.session;
+    DB.auditoria.unshift({
+        id_auditoria: DB.auditoria.length + 1,
+        fecha: new Date(),
+        usuario: u ? (u.nombre + ' ' + u.apellido) : 'sistema',
+        id_rol: u ? u.id_rol : 'SISTEMA',
+        accion: accion,
+        entidad: entidad,
+        detalle: detalle,
+        ip: state.ipCliente
+    });
+}
+
+function addMovimiento(idIns, tipo, cantidad, referencia) {
+    const ins = getInsumo(idIns);
+    let saldo;
+    if (tipo === 'ENTRADA') saldo = round2(ins.stock_actual + cantidad);
+    else if (tipo === 'SALIDA' || tipo === 'MERMA') saldo = round2(ins.stock_actual - cantidad);
+    else saldo = round2(cantidad);
+    ins.stock_actual = saldo;
+    DB.movimiento_inventario.unshift({
+        id_movimiento: DB.seq.movimiento++,
+        fecha: new Date(),
+        id_insumo: idIns,
+        tipo: tipo,
+        cantidad: cantidad,
+        saldo: saldo,
+        referencia: referencia,
+        usuario: state.session ? state.session.email : 'sistema'
+    });
+}
+
+function insumosCriticos() {
+    return DB.insumo.filter(i => i.stock_actual <= i.stock_minimo);
+}
+
+/* ================================================================
+   4. TOASTS Y MODALES
+   ================================================================ */
+
+function toast(mensaje, tipo = 'info') {
+    const icon = tipo === 'ok' ? 'fa-circle-check' : tipo === 'err' ? 'fa-circle-exclamation' : tipo === 'warn' ? 'fa-triangle-exclamation' : 'fa-circle-info';
+    const color = tipo === 'ok' ? 'var(--success)' : tipo === 'err' ? 'var(--danger)' : tipo === 'warn' ? 'var(--warning)' : 'var(--info)';
+    const el = document.createElement('div');
+    el.className = 'toast t-' + (tipo === 'info' ? 'info' : tipo);
+    el.innerHTML = '<i class="fa-solid ' + icon + '" style="color:' + color + ';"></i><span>' + escapeHtml(mensaje) + '</span>';
+    $('#toast-stack').appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity .3s'; }, 3600);
+    setTimeout(() => el.remove(), 3950);
+}
+
+let modalCallback = null;
+
+function openModal(titulo, cuerpoHTML, botones, opciones = {}) {
+    $('#modal-title').innerHTML = titulo;
+    $('#modal-body').innerHTML = cuerpoHTML || '';
+    const footer = $('#modal-footer');
+    footer.innerHTML = '';
+    modalCallback = opciones.onClose || null;
+    (botones || []).forEach(b => {
+        const btn = document.createElement('button');
+        btn.className = 'btn ' + (b.clase || 'btn-secondary');
+        btn.innerHTML = b.texto;
+        btn.addEventListener('click', () => {
+            if (b.accion) b.accion();
+            else closeModal();
+        });
+        footer.appendChild(btn);
+    });
+    $('#modal-card').className = 'modal-card' + (opciones.ancho ? ' wide' : '');
+    $('#app-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    $('#app-modal').style.display = 'none';
+    if (modalCallback) { const cb = modalCallback; modalCallback = null; cb(); }
+}
+
+function confirmar(titulo, mensaje, textoOk, alConfirmar) {
+    openModal('<i class="fa-solid fa-circle-question" style="color:var(--warning);"></i> ' + titulo,
+        '<p style="margin:0;">' + mensaje + '</p>',
+        [
+            { texto: 'Cancelar', clase: 'btn-secondary' },
+            { texto: textoOk || 'Confirmar', clase: 'btn-danger', accion: () => { closeModal(); alConfirmar(); } }
+        ]);
+}
+
+/* ================================================================
+   5. AUTENTICACION Y CONTROL DE ACCESO POR ROL (RF13 / RF14 / RNF04)
+   ================================================================ */
+
+function renderDemoUsers() {
+    $('#demo-users').innerHTML = DB.usuario.map(u => {
+        const rol = getRol(u.id_rol);
+        return '<button class="demo-user" data-action="fill-login" data-email="' + u.email + '">' +
+            '<span class="du-avatar" style="width:30px;height:30px;border-radius:8px;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;">' + initials(u) + '</span>' +
+            '<span style="flex:1;"><span class="du-name" style="display:block;">' + escapeHtml(u.nombre + ' ' + u.apellido) + '</span>' +
+            '<span class="du-role">' + rol.nombre + '</span></span></button>';
+    }).join('');
+}
+
+function showLoginError(msg) {
+    const box = $('#login-error');
+    box.textContent = msg;
+    box.style.display = 'block';
+}
+
+function doLogin() {
+    const email = $('#login-email').value.trim().toLowerCase();
+    const pass = $('#login-password').value;
+    $('#login-error').style.display = 'none';
+    if (!email || !pass) return showLoginError('Ingrese su correo y contrasena.');
+
+    const user = DB.usuario.find(u => u.email.toLowerCase() === email);
+    if (!user) return showLoginError('El usuario no esta registrado en la tabla usuario.');
+    if (!user.activo) return showLoginError('El usuario esta inactivo. Comuniquese con el administrador.');
+    if (user.password_hash !== hashPass(pass)) return showLoginError('Contrasena incorrecta. Verifique e intente nuevamente.');
+
+    user.ultimo_login = new Date();
+    state.session = user;
+    state.tab = (PERMISOS[user.id_rol] || ['mesero'])[0];
+    state.cashier = { tipo: null, id: null, metodo: 'EFECTIVO', partes: [], recibido: '' };
+    logAudit('LOGIN', 'usuario', 'Inicio de sesion de ' + user.email);
+    $('#login-screen').style.display = 'none';
+    $('#app').style.display = 'flex';
+    $('#login-password').value = '';
+    applyPermissions();
+    render();
+    toast('Bienvenido, ' + user.nombre + ' (' + getRol(user.id_rol).nombre + ')', 'ok');
+}
+
+function doLogout() {
+    logAudit('LOGOUT', 'usuario', 'Cierre de sesion de ' + state.session.email);
+    state.session = null;
+    $('#app').style.display = 'none';
+    $('#login-screen').style.display = 'flex';
+    $('#login-email').value = '';
+    $('#login-password').value = '';
+    $('#login-error').style.display = 'none';
+}
+
+function applyPermissions() {
+    const permitidos = PERMISOS[state.session.id_rol] || [];
+    $$('.nav-item').forEach(item => {
+        item.classList.toggle('hidden', !permitidos.includes(item.dataset.tab));
+    });
+    if (!permitidos.includes(state.tab)) state.tab = permitidos[0];
+
+    const u = state.session;
+    const rol = getRol(u.id_rol);
+    $('#su-name').textContent = u.nombre + ' ' + u.apellido;
+    $('#su-role').textContent = rol.nombre;
+    $('#su-avatar').textContent = initials(u);
+    $('#su-meta').innerHTML = 'Usuario: ' + escapeHtml(u.email) + '<br>Rol: ' + rol.nombre + '<br>Ultimo acceso: ' + (u.ultimo_login ? dateTimeStr(u.ultimo_login) : 'primer ingreso');
+    $('#top-user-name').textContent = u.nombre + ' ' + rol.nombre;
+}
+
+/* ================================================================
+   6. ENRUTADOR Y RENDER POR MODULO
+   ================================================================ */
+
+const TITULOS = {
+    mesero: 'Módulo Mesero - Selección de Mesa o Pedido Para Llevar',
+    cocina: 'Kitchen Display System (KDS) - Control de Cocina en Vivo',
+    cajero: 'Módulo Cajero - Cobro, RUC y Facturación Electrónica',
+    inventario: 'Gestión de Inventario - Insumos, Compras y Kardex',
+    reportes: 'Reportes Gerenciales - Ventas, Inventario y Eficiencia',
+    admin: 'Administración - Usuarios, Roles, Personal y Auditoría'
+};
+
+function switchTab(tab) {
+    if (!PERMISOS[state.session.id_rol].includes(tab)) {
+        toast('Su rol no tiene acceso a ese modulo (RF13).', 'err');
+        return;
+    }
+    state.tab = tab;
+    $$('.tab-panel').forEach(p => p.classList.remove('active'));
+    $('#panel-' + tab).classList.add('active');
+    $$('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.tab === tab));
+    $('#nav-title').textContent = TITULOS[tab];
+    $('#sidebar').classList.remove('open');
+    render();
+}
+
+function render() {
+    if (!state.session) return;
+    renderBadges();
+    if (state.tab === 'mesero') renderMesero();
+    if (state.tab === 'cocina') renderKDS();
+    if (state.tab === 'cajero') renderCajero();
+    if (state.tab === 'inventario') renderInventario();
+    if (state.tab === 'reportes') renderReportes();
+    if (state.tab === 'admin') renderAdmin();
+}
+
+function renderBadges() {
+    const kds = DB.pedido.filter(p => p.estado === 'PENDIENTE').length;
+    const badgeKds = $('#badge-kds');
+    badgeKds.textContent = kds;
+    badgeKds.classList.toggle('hidden', kds === 0);
+
+    const crit = insumosCriticos().length;
+    const badgeStock = $('#badge-stock');
+    badgeStock.textContent = crit;
+    badgeStock.classList.toggle('hidden', crit === 0);
+}
+
+/* ================================================================
+   7. MODULO MESERO (RF01, RF03, RF09)
+   ================================================================ */
+
+function pedidosActivos(tipo, ref) {
+    return DB.pedido.filter(p => p.estado !== 'ANULADO' && p.estado !== 'COBRADO' && p.tipo === tipo &&
+        (tipo === 'SALON' ? p.ref_mesa === ref : p.ref_llevar === ref));
+}
+
+function estadoMesa(id) {
+    const mesa = getMesa(id);
+    const ps = pedidosActivos('SALON', id);
+    if (!ps.length) return mesa.reservada ? 'RESERVADA' : 'LIBRE';
+    if (ps.some(p => p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION')) return 'OCUPADA';
+    return 'LISTO';
+}
+
+function totalConsumo(tipo, ref) {
+    return round2(pedidosActivos(tipo, ref).reduce((acc, p) => acc + p.total, 0));
+}
+
+function etiquetaPedido(p) {
+    return p.tipo === 'SALON' ? 'Mesa ' + String(p.ref_mesa).padStart(2, '0') : 'Para Llevar: ' + p.cliente;
+}
+
+function renderMesero() {
+    if (!state.orderTarget) {
+        $('#view-tables-selector').style.display = 'block';
+        $('#view-order-builder').style.display = 'none';
+        renderTablesGrid();
+        renderTakeawaysMesero();
+    } else {
+        $('#view-tables-selector').style.display = 'none';
+        $('#view-order-builder').style.display = 'block';
+        renderMenuCategorias();
+        renderMenuList();
+        updateQtyLabels();
+        renderCart();
+    }
+}
+
+function badgeEstadoMesa(estado) {
+    const map = { LIBRE: 'badge-libre', OCUPADA: 'badge-ocupada', LISTO: 'badge-cuenta', RESERVADA: 'badge-reservada' };
+    return '<span class="table-status-badge badge ' + map[estado] + '">' + estado + '</span>';
+}
+
+function renderTablesGrid() {
+    let html = '';
+    DB.mesa.forEach(m => {
+        const estado = estadoMesa(m.id_mesa);
+        const total = totalConsumo('SALON', m.id_mesa);
+        const cls = 'table-box' + (estado === 'OCUPADA' ? ' occupied' : '') + (estado === 'LISTO' ? ' ready-pay' : '') + (estado === 'RESERVADA' ? ' reserved' : '');
+        html += '<div class="' + cls + '" data-action="select-table" data-id="' + m.id_mesa + '">' +
+            '<div class="table-header-card">' +
+            '<span class="table-name">Mesa ' + String(m.numero).padStart(2, '0') + '</span>' + badgeEstadoMesa(estado) +
+            '</div>' +
+            '<p class="table-meta"><i class="fa-solid fa-users"></i> ' + m.capacidad + ' personas &middot; ' + escapeHtml(m.ubicacion) + '</p>' +
+            '<p class="table-total">Total: ' + money(total) + '</p>' +
+            (estado === 'OCUPADA' ? '<p class="table-meta" style="color:#B91C1C; font-weight:700; margin-top:4px;"><i class="fa-solid fa-fire-burner"></i> En preparacion</p>' : '') +
+            (estado === 'LISTO' ? '<p class="table-meta" style="color:#B45309; font-weight:700; margin-top:4px;"><i class="fa-solid fa-bell-concierge"></i> Listo para cobrar</p>' : '') +
+            '</div>';
+    });
+    $('#nine-tables-grid').innerHTML = html;
+}
+
+function renderTakeawaysMesero() {
+    const activos = DB.pedido.filter(p => p.tipo === 'LLEVAR' && (p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION' || p.estado === 'LISTO'));
+    $('#tw-count-badge').textContent = activos.length + ' activo(s)';
+    if (!activos.length) {
+        $('#mesero-takeaway-list').innerHTML = '<div class="empty-state"><i class="fa-solid fa-bag-shopping"></i>No hay pedidos Para Llevar activos.</div>';
+        return;
+    }
+    $('#mesero-takeaway-list').innerHTML = activos.map(p => {
+        const est = DB.estado_pedido.find(e => e.id === p.estado);
+        return '<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--border-color); border-radius:10px; margin-bottom:8px;">' +
+            '<div><strong style="font-size:0.9rem;">' + escapeHtml(p.cliente) + '</strong>' +
+            '<div style="font-size:0.75rem; color:#64748B;">Comanda #' + p.id + ' &middot; ' + timeStr(p.fecha_hora) + ' &middot; ' + p.items.length + ' platillo(s)</div></div>' +
+            '<div style="display:flex; align-items:center; gap:10px;">' +
+            '<span class="badge badge-' + est.color + '">' + est.nombre + '</span>' +
+            '<strong style="font-size:0.9rem;">' + money(p.total) + '</strong></div></div>';
+    }).join('');
+}
+
+function selectTable(id) {
+    state.orderTarget = { tipo: 'SALON', id: Number(id) };
+    state.selection = {};
+    state.notas = {};
+    state.editPedidoId = null;
+    const mesa = getMesa(Number(id));
+    $('#order-target-title').innerHTML = 'Registrando Pedido: Mesa ' + String(mesa.numero).padStart(2, '0') + ' <span style="font-size:0.75rem; color:#64748B; font-weight:600;">(' + escapeHtml(mesa.ubicacion) + ')</span>';
+    $('#client-name-container').style.display = 'none';
+    $('#input-client-name').value = '';
+    $('#order-note-box').className = 'inline-note';
+    $('#order-note-box').innerHTML = '<i class="fa-solid fa-circle-info"></i><span>Seleccione la cantidad de platos y bebidas solicitados por el cliente. Al confirmar la comanda, el stock se descuenta automaticamente del inventario (RF09).</span>';
+    $('#btn-send-order').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Pedido a Cocina';
+    state.categoriaMenu = DB.categoria_producto[0].id_categoria_producto;
+    renderMesero();
+}
+
+function openTakeaway() {
+    state.orderTarget = { tipo: 'LLEVAR', id: null };
+    state.selection = {};
+    state.notas = {};
+    state.editPedidoId = null;
+    $('#order-target-title').innerHTML = 'Registrando Pedido: <span style="color:var(--primary);">Para Llevar</span>';
+    $('#client-name-container').style.display = 'block';
+    $('#input-client-name').value = '';
+    $('#order-note-box').className = 'inline-note warn';
+    $('#order-note-box').innerHTML = '<i class="fa-solid fa-circle-info"></i><span>Pedido Para Llevar: registre el nombre del cliente y el mozo responsable. Al confirmar, el stock se descuenta del inventario.</span>';
+    $('#btn-send-order').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Enviar Pedido a Cocina';
+    state.categoriaMenu = DB.categoria_producto[0].id_categoria_producto;
+    renderMesero();
+}
+
+function backToTables() {
+    state.orderTarget = null;
+    state.selection = {};
+    state.notas = {};
+    state.editPedidoId = null;
+    renderMesero();
+}
+
+function renderMenuCategorias() {
+    $('#menu-categories').innerHTML = DB.categoria_producto.map(c =>
+        '<button class="subtab' + (state.categoriaMenu === c.id_categoria_producto ? ' active' : '') + '" data-action="menu-cat" data-cat="' + c.id_categoria_producto + '">' + escapeHtml(c.nombre) + '</button>'
+    ).join('');
+}
+
+function renderMenuList() {
+    const items = DB.producto.filter(p => p.id_categoria_producto === state.categoriaMenu);
+    $('#full-menu-list').innerHTML = items.map(p => {
+        const qty = state.selection[p.id_producto] || 0;
+        return '<div class="menu-item-row' + (qty > 0 ? ' selected' : '') + '">' +
+            '<div class="item-info" style="flex:1;">' +
+            '<h4>' + escapeHtml(p.nombre) + '</h4>' +
+            '<span>' + money(p.precio_venta) + '</span>' +
+            '<div style="font-size:0.72rem; color:#94A3B8; margin:3px 0 5px;">' + escapeHtml(p.descripcion) + '</div>' +
+            '<div class="item-note"><input type="text" placeholder="Nota para cocina (Ej. sin aji, poco sal)" data-nota="' + p.id_producto + '" value="' + escapeHtml(state.notas[p.id_producto] || '') + '"></div>' +
+            '</div>' +
+            '<div class="qty-box">' +
+            '<button class="btn-qty" data-action="qty" data-id="' + p.id_producto + '" data-delta="-1">-</button>' +
+            '<span class="qty-num" data-qty="' + p.id_producto + '">' + qty + '</span>' +
+            '<button class="btn-qty" data-action="qty" data-id="' + p.id_producto + '" data-delta="1">+</button>' +
+            '</div></div>';
+    }).join('');
+}
+
+function changeQty(id, delta) {
+    const actual = state.selection[id] || 0;
+    const nueva = Math.max(0, actual + delta);
+    if (nueva === 0) delete state.selection[id]; else state.selection[id] = nueva;
+    updateQtyLabels();
+    renderCart();
+}
+
+function updateQtyLabels() {
+    $$('[data-qty]').forEach(el => {
+        const q = state.selection[el.dataset.qty] || 0;
+        el.textContent = q;
+        const row = el.closest('.menu-item-row');
+        if (row) row.classList.toggle('selected', q > 0);
+    });
+}
+
+function buildItems() {
+    return Object.keys(state.selection).map(id => {
+        const q = state.selection[id];
+        const p = getProducto(id);
+        return { id_producto: id, nombre: p.nombre, cantidad: q, precio: p.precio_venta, nota: (state.notas[id] || '').trim() };
+    });
+}
+
+function totalSelection() {
+    return round2(buildItems().reduce((acc, i) => acc + i.cantidad * i.precio, 0));
+}
+
+function renderCart() {
+    const items = buildItems();
+    const cont = $('#summary-items-list');
+    if (!items.length) {
+        cont.innerHTML = '<div class="empty-state"><i class="fa-solid fa-receipt"></i>Ningun item seleccionado</div>';
+    } else {
+        cont.innerHTML = items.map(i =>
+            '<div class="summary-row"><span class="sr-name">' + i.cantidad + 'x ' + escapeHtml(i.nombre) +
+            (i.nota ? '<span class="sr-note"><i class="fa-solid fa-note-sticky"></i> ' + escapeHtml(i.nota) + '</span>' : '') +
+            '</span><strong>' + money(i.cantidad * i.precio) + '</strong></div>'
+        ).join('');
+    }
+    $('#summary-total').textContent = money(totalSelection());
+
+    const target = state.orderTarget;
+    if (target) {
+        const count = target.tipo === 'SALON' ? pedidosActivos('SALON', target.id).length : DB.pedido.filter(p => p.tipo === 'LLEVAR' && p.estado !== 'COBRADO' && p.estado !== 'ANULADO').length;
+        $('#btn-ver-comandas').innerHTML = '<i class="fa-solid fa-receipt"></i> Comandas (' + count + ')';
+    }
+}
+
+function descontarStockPorItems(items, referencia) {
+    const criticos = [];
+    items.forEach(it => {
+        const prod = getProducto(it.id_producto);
+        (prod.receta || []).forEach(par => {
+            const ins = getInsumo(par[0]);
+            const salida = round2(par[1] * it.cantidad);
+            addMovimiento(par[0], 'SALIDA', salida, referencia);
+            if (ins.stock_actual <= ins.stock_minimo && !criticos.some(c => c.id_insumo === ins.id_insumo)) criticos.push(ins);
+        });
+    });
+    return criticos;
+}
+
+function sendOrder() {
+    const target = state.orderTarget;
+    if (!target) return;
+    const items = buildItems();
+    if (!items.length) return toast('Debe seleccionar al menos un plato o bebida.', 'err');
+
+    let cliente = null;
+    if (target.tipo === 'LLEVAR') {
+        cliente = $('#input-client-name').value.trim();
+        if (!cliente) return toast('Por favor ingrese el nombre del cliente para el pedido Para Llevar.', 'err');
+        target.id = 'TW_' + Date.now();
+    }
+
+    const total = round2(items.reduce((a, i) => a + i.cantidad * i.precio, 0));
+    const ahora = new Date();
+
+    let pedido;
+    if (state.editPedidoId) {
+        pedido = DB.pedido.find(p => p.id === state.editPedidoId);
+        if (!pedido || pedido.estado !== 'PENDIENTE') {
+            state.editPedidoId = null;
+            return sendOrder();
+        }
+        items.forEach(i => {
+            const existe = pedido.items.find(x => x.id_producto === i.id_producto);
+            if (existe) { existe.cantidad += i.cantidad; if (i.nota) existe.nota = i.nota; }
+            else pedido.items.push(i);
+        });
+        pedido.total = round2(pedido.items.reduce((a, i) => a + i.cantidad * i.precio, 0));
+        pedido.ampliacion = (pedido.ampliacion || 0) + 1;
+        logAudit('AMPLIAR_COMANDA', 'pedido', 'Comanda #' + pedido.id + ' ampliada con ' + items.length + ' item(s)');
+        toast('Comanda #' + pedido.id + ' ampliada correctamente.', 'ok');
+    } else {
+        pedido = {
+            id: ++DB.seq.pedido,
+            tipo: target.tipo,
+            ref_mesa: target.tipo === 'SALON' ? target.id : null,
+            ref_llevar: target.tipo === 'LLEVAR' ? target.id : null,
+            cliente: cliente,
+            id_usuario_mozo: state.session.id_usuario,
+            mozo: state.session.nombre + ' ' + state.session.apellido,
+            fecha_hora: ahora,
+            enviado_en: ahora,
+            iniciado_en: null,
+            listo_en: null,
+            estado: 'PENDIENTE',
+            items: items,
+            total: total
+        };
+        DB.pedido.push(pedido);
+        logAudit('REGISTRAR_PEDIDO', 'pedido', 'Comanda #' + pedido.id + ' de ' + etiquetaPedido(pedido) + ' por ' + money(total));
+    }
+
+    const criticos = descontarStockPorItems(items, 'COMANDA #' + pedido.id);
+    toast('Comanda enviada con exito para ' + etiquetaPedido(pedido) + '!', 'ok');
+
+    if (criticos.length) {
+        toast(criticos.length + ' insumo(s) en stock minimo: ' + criticos.map(c => escapeHtml(c.nombre)).join(', '), 'warn');
+    }
+
+    backToTables();
+}
+
+function abrirComandas() {
+    const target = state.orderTarget;
+    if (!target) return;
+    const lista = DB.pedido.filter(p => p.tipo === target.tipo && (target.tipo === 'SALON' ? p.ref_mesa === target.id : p.ref_llevar === target.id))
+        .sort((a, b) => b.id - a.id).slice(0, 6);
+
+    let html = '<p style="font-size:0.82rem; color:#475569; margin-bottom:14px;">Comandas de ' + (target.tipo === 'SALON' ? 'la Mesa ' + String(target.id).padStart(2, '0') : 'este pedido Para Llevar') + '. Solo las comandas en estado <strong>PENDIENTE</strong> pueden modificarse o anularse (RF03).</p>';
+
+    if (!lista.length) html = '<div class="empty-state"><i class="fa-solid fa-receipt"></i>Todavia no hay comandas registradas.</div>';
+
+    lista.forEach(p => {
+        const est = DB.estado_pedido.find(e => e.id === p.estado);
+        const editable = p.estado === 'PENDIENTE';
+        html += '<div class="split-part" style="margin-bottom:12px;">' +
+            '<div class="split-part-head"><div><strong>Comanda #' + p.id + '</strong> <span class="badge badge-' + est.color + '">' + est.nombre + '</span></div>' +
+            '<span style="font-size:0.75rem; color:#64748B;"><i class="fa-regular fa-clock"></i> ' + timeStr(p.fecha_hora) + '</span></div>' +
+            '<ul class="kds-items" style="margin-bottom:8px;">' + p.items.map(i => '<li>' + i.cantidad + 'x ' + escapeHtml(i.nombre) + (i.nota ? ' <span class="kds-note">(' + escapeHtml(i.nota) + ')</span>' : '') + '</li>').join('') + '</ul>' +
+            '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+            '<strong>' + money(p.total) + '</strong>' +
+            '<div style="display:flex; gap:8px;">' +
+            (editable ? '<button class="btn btn-info btn-sm" data-action="edit-comanda" data-id="' + p.id + '"><i class="fa-solid fa-pen"></i> Anadir platillos</button>' +
+                '<button class="btn btn-danger btn-sm" data-action="anular-comanda" data-id="' + p.id + '"><i class="fa-solid fa-ban"></i> Anular</button>' : '') +
+            (p.estado === 'EN_PREPARACION' ? '<span style="font-size:0.72rem; color:#B45309; font-weight:700;">En cocina: ya no se puede modificar</span>' : '') +
+            (p.estado === 'LISTO' ? '<span style="font-size:0.72rem; color:#047857; font-weight:700;">Lista para entregar</span>' : '') +
+            '</div></div></div>';
+    });
+
+    openModal('<i class="fa-solid fa-receipt" style="color:var(--primary);"></i> Comandas del pedido', html,
+        [{ texto: 'Cerrar', clase: 'btn-secondary' }], { ancho: true });
+}
+
+function editarComanda(id) {
+    const p = DB.pedido.find(x => x.id === Number(id));
+    if (!p) return;
+    if (p.estado !== 'PENDIENTE') return toast('Solo las comandas PENDIENTES pueden modificarse.', 'err');
+    closeModal();
+    state.editPedidoId = p.id;
+    state.selection = {};
+    state.notas = {};
+    $('#order-target-title').innerHTML = 'Ampliando Comanda <strong>#' + p.id + '</strong> - ' + escapeHtml(etiquetaPedido(p));
+    $('#order-note-box').className = 'inline-note warn';
+    $('#order-note-box').innerHTML = '<i class="fa-solid fa-circle-exclamation"></i><span>Esta comanda ya fue enviada a cocina. Los platillos que agregue se sumaran a la comanda <strong>#' + p.id + '</strong> y el stock se descontara solo por los items nuevos.</span>';
+    $('#btn-send-order').innerHTML = '<i class="fa-solid fa-paper-plane"></i> Agregar a Comanda #' + p.id;
+    renderMesero();
+}
+
+function anularComanda(id) {
+    const p = DB.pedido.find(x => x.id === Number(id));
+    if (!p) return;
+    if (p.estado !== 'PENDIENTE') return toast('La comanda ya fue tomada por cocina y no se puede anular.', 'err');
+    confirmar('Anular comanda #' + p.id, 'Se devolvera el stock de los insumos de esta comanda. Esta accion quedara registrada en la auditoria.',
+        'Anular comanda', () => {
+            p.items.forEach(it => {
+                const prod = getProducto(it.id_producto);
+                (prod.receta || []).forEach(par => addMovimiento(par[0], 'ENTRADA', round2(par[1] * it.cantidad), 'ANULACION COMANDA #' + p.id));
+            });
+            p.estado = 'ANULADO';
+            p.anulada_en = new Date();
+            logAudit('ANULAR_PEDIDO', 'pedido', 'Comanda #' + p.id + ' anulada; stock revertido');
+            toast('Comanda #' + p.id + ' anulada. El stock fue devuelto al inventario.', 'warn');
+            closeModal();
+            render();
+        });
+}
+
+/* ================================================================
+   8. MODULO COCINA - KDS (RF02, RF04)
+   ================================================================ */
+
+function nivelTiempo(min) {
+    if (min < 10) return { cls: 'chip-ok', borde: 't-ok', txt: 'ATENDIDO RAPIDO' };
+    if (min <= 20) return { cls: 'chip-warn', borde: 't-warn', txt: 'ATENCION' };
+    return { cls: 'chip-danger', borde: 't-danger', txt: 'CRITICO' };
+}
+
+function renderKDS() {
+    const buckets = { PENDIENTE: [], EN_PREPARACION: [], LISTO: [] };
+    DB.pedido.filter(p => p.estado !== 'ANULADO' && p.estado !== 'COBRADO')
+        .forEach(p => { if (buckets[p.estado]) buckets[p.estado].push(p); });
+    Object.keys(buckets).forEach(k => buckets[k].sort((a, b) => new Date(a.enviado_en) - new Date(b.enviado_en)));
+
+    const targets = { PENDIENTE: '#kds-col-pendientes', EN_PREPARACION: '#kds-col-prep', LISTO: '#kds-col-ready' };
+    const vacios = { PENDIENTE: 'Sin pedidos pendientes', EN_PREPARACION: 'Sin pedidos en preparacion', LISTO: 'Sin pedidos listos' };
+
+    Object.keys(buckets).forEach(k => {
+        $(targets[k]).innerHTML = buckets[k].map(p => {
+            const min = minutesSince(p.enviado_en);
+            const lvl = nivelTiempo(min);
+            const items = p.items.map(i => '<li><strong>' + i.cantidad + 'x</strong> ' + escapeHtml(i.nombre) + (i.nota ? '<br><span class="kds-note"><i class="fa-solid fa-note-sticky"></i> ' + escapeHtml(i.nota) + '</span>' : '') + '</li>').join('');
+            let acciones = '';
+            if (k === 'PENDIENTE') {
+                acciones = '<div class="kds-actions">' +
+                    '<button class="btn btn-danger btn-sm" data-action="kds-status" data-id="' + p.id + '" data-status="ANULADO">Rechazar</button>' +
+                    '<button class="btn btn-info btn-sm" data-action="kds-status" data-id="' + p.id + '" data-status="EN_PREPARACION">Iniciar Preparacion</button></div>';
+            } else if (k === 'EN_PREPARACION') {
+                acciones = '<div class="kds-actions">' +
+                    '<button class="btn btn-secondary btn-sm" data-action="kds-print" data-id="' + p.id + '"><i class="fa-solid fa-print"></i> Ticket</button>' +
+                    '<button class="btn btn-success btn-sm" data-action="kds-status" data-id="' + p.id + '" data-status="LISTO">Marcar como Listo</button></div>';
+            } else {
+                acciones = '<div class="kds-actions">' +
+                    '<button class="btn btn-secondary btn-sm" data-action="kds-print" data-id="' + p.id + '"><i class="fa-solid fa-print"></i> Ticket</button>' +
+                    '<button class="btn btn-success btn-sm" data-action="kds-cobrar" data-id="' + p.id + '"><i class="fa-solid fa-cash-register"></i> Ir a Cobrar</button></div>';
+            }
+            return '<div class="kds-ticket-item ' + (k === 'EN_PREPARACION' ? 't-info ' + lvl.borde : lvl.borde) + '">' +
+                '<div class="kds-ticket-head"><span class="kt-label">' + escapeHtml(etiquetaPedido(p)) + '</span>' +
+                '<span class="kt-chip ' + lvl.cls + '" data-chip="' + p.id + '">' + min + ' min</span></div>' +
+                '<div style="font-size:0.7rem; color:#94A3B8; margin-bottom:6px;">Comanda #' + p.id + ' &middot; ' + timeStr(p.enviado_en) + ' &middot; Mozo: ' + escapeHtml(p.mozo) +
+                (p.ampliacion ? ' &middot; <span style="color:#B45309; font-weight:800;">AMPLIADA</span>' : '') + '</div>' +
+                '<ul class="kds-items">' + items + '</ul>' + acciones + '</div>';
+        }).join('') || '<div class="empty-state"><i class="fa-solid fa-mug-hot"></i>' + vacios[k] + '</div>';
+    });
+
+    $('#count-pend').textContent = buckets.PENDIENTE.length;
+    $('#count-prep').textContent = buckets.EN_PREPARACION.length;
+    $('#count-ready').textContent = buckets.LISTO.length;
+}
+
+function actualizarChipsTiempo() {
+    $$('[data-chip]').forEach(el => {
+        const p = DB.pedido.find(x => x.id === Number(el.dataset.chip));
+        if (!p) return;
+        const min = minutesSince(p.enviado_en);
+        const lvl = nivelTiempo(min);
+        el.textContent = min + ' min';
+        el.className = 'kt-chip ' + lvl.cls;
+    });
+}
+
+function kdsChangeStatus(id, nuevo) {
+    const p = DB.pedido.find(x => x.id === Number(id));
+    if (!p) return;
+    if (nuevo === 'ANULADO') {
+        confirmar('Rechazar comanda #' + p.id, 'La comanda sera devuelta al mozo y el stock se devolvera al inventario.', 'Rechazar comanda', () => {
+            p.items.forEach(it => {
+                const prod = getProducto(it.id_producto);
+                (prod.receta || []).forEach(par => addMovimiento(par[0], 'ENTRADA', round2(par[1] * it.cantidad), 'RECHAZO COMANDA #' + p.id));
+            });
+            p.estado = 'ANULADO';
+            logAudit('RECHAZAR_COMANDA', 'pedido', 'Cocina rechazo la comanda #' + p.id);
+            toast('Comanda #' + p.id + ' rechazada y devuelta al mozo.', 'warn');
+            render();
+        });
+        return;
+    }
+    p.estado = nuevo;
+    if (nuevo === 'EN_PREPARACION') {
+        p.iniciado_en = new Date();
+        toast('Comanda #' + p.id + ' en preparacion.', 'info');
+    }
+    if (nuevo === 'LISTO') {
+        p.listo_en = new Date();
+        toast('Comanda #' + p.id + ' lista para ' + (p.tipo === 'SALON' ? 'la Mesa ' + String(p.ref_mesa).padStart(2, '0') : 'entrega') + '.', 'ok');
+    }
+    logAudit('KDS_' + nuevo, 'pedido', 'Comanda #' + p.id + ' paso a ' + nuevo);
+    render();
+}
+
+function printHTML(titulo, contenido) {
+    $('#print-area').innerHTML = '<div style="font-family:sans-serif; color:#000;">' + contenido + '</div>';
+    const prev = document.title;
+    document.title = titulo;
+    window.print();
+    document.title = prev;
+}
+
+function ticketComandaHTML(p) {
+    return '<div style="border:1px solid #000; padding:14px; margin-bottom:12px; font-size:13px;">' +
+        '<div style="display:flex; justify-content:space-between; border-bottom:2px dashed #000; padding-bottom:6px; margin-bottom:8px;">' +
+        '<strong style="font-size:15px;">COMANDA #' + p.id + '</strong><span>' + timeStr(p.fecha_hora) + '</span></div>' +
+        '<div style="font-weight:bold; font-size:15px; margin-bottom:6px;">' + escapeHtml(etiquetaPedido(p)) + '</div>' +
+        '<div style="margin-bottom:8px;">Mozo: ' + escapeHtml(p.mozo) + ' &middot; Estado: ' + p.estado + '</div>' +
+        '<ul style="margin:0; padding-left:18px;">' + p.items.map(i => '<li><strong>' + i.cantidad + 'x</strong> ' + escapeHtml(i.nombre) + (i.nota ? ' <em>(' + escapeHtml(i.nota) + ')</em>' : '') + '</li>').join('') + '</ul>' +
+        '</div>';
+}
+
+function imprimirComanda(id) {
+    const p = DB.pedido.find(x => x.id === Number(id));
+    if (!p) return;
+    printHTML('Comanda #' + p.id, '<h2 style="margin:0 0 10px;">EL SABOR IQUENO - Kitchen Display</h2>' + ticketComandaHTML(p));
+}
+
+function imprimirComandasDelDia() {
+    const lista = DB.pedido.filter(p => p.estado !== 'ANULADO' && p.estado !== 'COBRADO');
+    if (!lista.length) return toast('No hay comandas activas para imprimir.', 'warn');
+    printHTML('Comandas del dia', '<h2 style="margin:0 0 10px;">EL SABOR IQUENO - Comandas activas</h2>' + lista.map(ticketComandaHTML).join(''));
+}
+
+/* ================================================================
+   9. MODULO CAJERO Y FACTURACION (RF05, RF06, RF07, RF08)
+   ================================================================ */
+
+function consumoItems(tipo, ref) {
+    const items = [];
+    pedidosActivos(tipo, ref).forEach(p => p.items.forEach(i => items.push(i)));
+    return items;
+}
+
+function calcularCuenta(items) {
+    const total = round2(items.reduce((a, i) => a + i.cantidad * i.precio, 0));
+    const subtotal = round2(total / 1.18);
+    return { items: items, subtotal: subtotal, igv: round2(total - subtotal), total: total };
+}
+
+function renderCajero() {
+    let html = '';
+    DB.mesa.forEach(m => {
+        const estado = estadoMesa(m.id_mesa);
+        const total = totalConsumo('SALON', m.id_mesa);
+        const cls = 'table-box' + (estado === 'OCUPADA' ? ' occupied' : '') + (estado === 'LISTO' ? ' ready-pay' : '') + (estado === 'RESERVADA' ? ' reserved' : '');
+        const sel = state.cashier.tipo === 'SALON' && state.cashier.id === m.id_mesa;
+        html += '<div class="' + cls + (sel ? ' selected' : '') + '" data-action="cashier-select" data-tipo="SALON" data-id="' + m.id_mesa + '" style="padding:14px;' + (sel ? 'outline:3px solid var(--primary);' : '') + '">' +
+            '<div class="table-header-card" style="margin-bottom:6px;"><span class="table-name" style="font-size:1rem;">Mesa ' + String(m.numero).padStart(2, '0') + '</span>' + badgeEstadoMesa(estado) + '</div>' +
+            '<p class="table-total" style="font-size:0.85rem;">Total: ' + money(total) + '</p></div>';
+    });
+    $('#cashier-tables-grid').innerHTML = html;
+
+    const twListos = DB.pedido.filter(p => p.tipo === 'LLEVAR' && p.estado === 'LISTO');
+    $('#cashier-takeaway-list').innerHTML = twListos.length ? twListos.map(p => {
+        const sel = state.cashier.tipo === 'LLEVAR' && state.cashier.id === p.ref_llevar;
+        return '<div class="split-part" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;' + (sel ? 'border-color:var(--primary);' : '') + '" data-action="cashier-select" data-tipo="LLEVAR" data-id="' + p.ref_llevar + '">' +
+            '<div><h4 style="font-size:0.92rem; font-weight:700; color:var(--primary);"><i class="fa-solid fa-bag-shopping"></i> Para Llevar: ' + escapeHtml(p.cliente) + '</h4>' +
+            '<span style="font-size:0.75rem; color:#64748B;">Comanda #' + p.id + ' &middot; ' + timeStr(p.fecha_hora) + '</span></div>' +
+            '<div style="text-align:right;"><strong>' + money(p.total) + '</strong><div class="badge badge-ok" style="margin-top:4px;">Listo</div></div></div>';
+    }).join('') : '<div class="empty-state"><i class="fa-solid fa-bag-shopping"></i>No hay pedidos Para Llevar listos para cobrar.</div>';
+
+    const abiertas = DB.mesa.filter(m => totalConsumo('SALON', m.id_mesa) > 0).length + twListos.length;
+    $('#cashier-open-count').textContent = abiertas + ' cuenta(s) abierta(s)';
+
+    renderDetalleCuenta();
+    renderCobroExtra();
+}
+
+function partesPendientes() {
+    return state.cashier.partes.filter(p => !p.pagada);
+}
+
+function renderDetalleCuenta() {
+    const c = state.cashier;
+    const btnPay = $('#btn-process-pay');
+    const btnSplit = $('#btn-split');
+
+    if (!c.tipo) {
+        $('#cashier-title-panel').textContent = 'Detalle de Cuenta';
+        $('#cashier-items-summary').innerHTML = '<div class="empty-state"><i class="fa-solid fa-hand-pointer"></i>Seleccione una mesa o pedido para llevar activo.</div>';
+        $('#cashier-comanda-count').textContent = '0 comandas';
+        $('#cashier-total-amount').textContent = money(0);
+        $('#cashier-split-area').innerHTML = '';
+        btnPay.disabled = true;
+        btnSplit.disabled = true;
+        return;
+    }
+
+    const etiqueta = c.tipo === 'SALON' ? 'Cobrar Mesa ' + String(c.id).padStart(2, '0') : 'Cobrar Para Llevar';
+    $('#cashier-title-panel').textContent = etiqueta;
+
+    const ps = pedidosActivos(c.tipo, c.id);
+    const comandaCount = ps.length;
+    $('#cashier-comanda-count').textContent = comandaCount + ' comanda(s)';
+
+    if (!ps.length) {
+        $('#cashier-items-summary').innerHTML = '<div class="inline-note danger"><i class="fa-solid fa-circle-exclamation"></i><span>Este pedido no tiene consumos activos.</span></div>';
+        $('#cashier-total-amount').textContent = money(0);
+        $('#cashier-split-area').innerHTML = '';
+        btnPay.disabled = true;
+        btnSplit.disabled = true;
+        return;
+    }
+
+    if (ps.some(p => p.estado === 'PENDIENTE' || p.estado === 'EN_PREPARACION')) {
+        $('#cashier-items-summary').innerHTML = '<div class="inline-note warn"><i class="fa-solid fa-fire-burner"></i><span>El pedido aun no esta listo en cocina. No se puede cobrar hasta que todos los pedidos esten en estado <strong>LISTO</strong>.</span></div>';
+        $('#cashier-total-amount').textContent = money(0);
+        $('#cashier-split-area').innerHTML = '';
+        btnPay.disabled = true;
+        btnSplit.disabled = true;
+        return;
+    }
+
+    const cuenta = calcularCuenta(consumoItems(c.tipo, c.id));
+
+    if (!c.partes.length) {
+        const lineas = cuenta.items.map(i =>
+            '<div class="cuenta-line"><span>' + i.cantidad + 'x ' + escapeHtml(i.nombre) + (i.nota ? ' <em style="font-size:0.7rem; color:#B45309;">(' + escapeHtml(i.nota) + ')</em>' : '') + '</span><strong>' + money(i.cantidad * i.precio) + '</strong></div>'
+        ).join('');
+        $('#cashier-items-summary').innerHTML = lineas +
+            '<div class="cuenta-line" style="color:#64748B;"><span>Subtotal:</span><span>' + money(cuenta.subtotal) + '</span></div>' +
+            '<div class="cuenta-line" style="color:#64748B;"><span>IGV (18%):</span><span>' + money(cuenta.igv) + '</span></div>';
+        $('#cashier-split-area').innerHTML = '';
+        $('#cashier-total-amount').textContent = money(cuenta.total);
+        btnPay.disabled = false;
+        btnSplit.disabled = cuenta.items.length < 2;
+        return;
+    }
+
+    $('#cashier-items-summary').innerHTML = '<div class="inline-note"><i class="fa-solid fa-people-arrows-left-right"></i><span>Cuenta dividida en <strong>' + c.partes.length + '</strong> partes (RF06). Se cobra parte por parte.</span></div>';
+    $('#cashier-split-area').innerHTML = c.partes.map(p =>
+        '<div class="split-part' + (p.pagada ? ' paid' : '') + '">' +
+        '<div class="split-part-head"><strong>Parte ' + p.n + '</strong>' +
+        (p.pagada ? '<span class="badge badge-ok">Pagada - ' + escapeHtml(p.comprobante) + '</span>' : (p === partesPendientes()[0] ? '<span class="badge badge-info">Pendiente de cobro</span>' : '<span class="badge badge-neutral">En espera</span>')) + '</div>' +
+        p.items.map(i => '<div class="cuenta-line"><span>' + i.cantidad + 'x ' + escapeHtml(i.nombre) + '</span><span>' + money(i.cantidad * i.precio) + '</span></div>').join('') +
+        '<div class="cuenta-line" style="border-top:1px dashed var(--border-color); margin-top:6px; padding-top:6px;"><span>Total parte ' + p.n + ':</span><strong>' + money(p.total) + '</strong></div>' +
+        '</div>'
+    ).join('');
+
+    const activa = partesPendientes()[0];
+    $('#cashier-total-amount').textContent = activa ? money(activa.total) : money(0);
+    btnPay.disabled = !activa;
+    btnSplit.disabled = true;
+}
+
+function renderCobroExtra() {
+    const box = $('#cashier-cobro-extra');
+    if (!state.cashier.tipo) { box.innerHTML = ''; return; }
+    if (state.cashier.metodo === 'EFECTIVO') {
+        box.innerHTML = '<div class="form-grid" style="margin-top:10px;">' +
+            '<div class="field"><label>Monto recibido:</label><input type="number" step="0.01" id="input-recibido" placeholder="0.00" data-moneda></div>' +
+            '<div class="field"><label>Vuelto:</label><input type="text" id="input-vuelto" placeholder="S/ 0.00" readonly></div>' +
+            '</div>';
+        const recv = $('#input-recibido');
+        if (recv) {
+            recv.addEventListener('input', () => {
+                const total = totalACobrar();
+                const v = parseFloat(recv.value || 0) - total;
+                $('#input-vuelto').value = money(v > 0 ? v : 0);
+            });
+        }
+    } else if (state.cashier.metodo === 'DIGITAL') {
+        box.innerHTML = '<div class="inline-note" style="margin-top:10px;"><i class="fa-solid fa-qrcode"></i><span>Muestre el codigo QR de Yape / Plin al cliente y registre el pago al confirmar la operacion.</span></div>';
+    } else {
+        box.innerHTML = '<div class="inline-note warn" style="margin-top:10px;"><i class="fa-solid fa-credit-card"></i><span>Cobre mediante el POS y registre el pago una vez aprobada la operacion.</span></div>';
+    }
+}
+
+function totalACobrar() {
+    const c = state.cashier;
+    if (!c.tipo) return 0;
+    if (c.partes.length) {
+        const activa = partesPendientes()[0];
+        return activa ? activa.total : 0;
+    }
+    return totalConsumo(c.tipo, c.id);
+}
+
+function selectCashierTarget(tipo, id) {
+    state.cashier = { tipo: tipo, id: tipo === 'SALON' ? Number(id) : id, metodo: state.cashier.metodo, partes: [], recibido: '' };
+    $('#input-ruc').value = '';
+    $('#input-razon').value = '';
+    $('#ruc-error').style.display = 'none';
+    $$('#payment-options .pay-method-btn').forEach(el => el.classList.toggle('active', el.dataset.method === state.cashier.metodo.toLowerCase()));
+    renderCajero();
+}
+
+function selectPayMethod(method) {
+    state.cashier.metodo = method.toUpperCase();
+    $$('#payment-options .pay-method-btn').forEach(el => el.classList.toggle('active', el.dataset.method === method));
+    renderCobroExtra();
+}
+
+function abrirDivision() {
+    const c = state.cashier;
+    if (!c.tipo) return;
+    const items = consumoItems(c.tipo, c.id);
+    if (items.length < 2) return toast('La cuenta debe tener al menos 2 items para dividirla.', 'err');
+
+    openModal('<i class="fa-solid fa-people-arrows-left-right" style="color:var(--primary);"></i> Dividir cuenta entre comensales',
+        '<p style="font-size:0.84rem;">Indique en quantas partes se dividira la cuenta. El sistema reparte los platillos de forma proporcional y genera un comprobante por parte (RF06).</p>' +
+        '<div class="field"><label>Numero de partes:</label><input type="number" id="input-partes" min="2" max="10" value="2"></div>',
+        [{ texto: 'Cancelar', clase: 'btn-secondary' }, { texto: 'Generar division', clase: 'btn', accion: aplicarDivision }],
+        { ancho: true });
+}
+
+function aplicarDivision() {
+    const n = parseInt($('#input-partes').value || 2, 10);
+    if (!n || n < 2 || n > 10) return toast('Ingrese un numero de partes entre 2 y 10.', 'err');
+    const items = consumoItems(state.cashier.tipo, state.cashier.id);
+
+    const partes = Array.from({ length: n }, (_, i) => ({ n: i + 1, items: [], pagada: false, comprobante: null }));
+    let cursor = 0;
+    items.forEach(it => {
+        for (let k = 0; k < it.cantidad; k++) {
+            const destino = partes[cursor % n];
+            cursor++;
+            const existente = destino.items.find(x => x.id_producto === it.id_producto && x.nota === (it.nota || ''));
+            if (existente) existente.cantidad++;
+            else destino.items.push(Object.assign({}, it));
+        }
+    });
+
+    partes.forEach(p => {
+        const calc = calcularCuenta(p.items);
+        p.subtotal = calc.subtotal;
+        p.igv = calc.igv;
+        p.total = calc.total;
+    });
+
+    state.cashier.partes = partes.filter(p => p.items.length > 0);
+    logAudit('DIVIDIR_CUENTA', 'cuenta', 'Cuenta dividida en ' + state.cashier.partes.length + ' parte(s)');
+    closeModal();
+    renderCajero();
+    toast('Cuenta dividida en ' + state.cashier.partes.length + ' parte(s).', 'ok');
+}
+
+function processPayment() {
+    const c = state.cashier;
+    if (!c.tipo) return;
+
+    const ruc = $('#input-ruc').value.trim();
+    if (ruc && !/^[0-9]{11}$/.test(ruc)) {
+        $('#ruc-error').style.display = 'block';
+        return toast('El numero de RUC debe tener 11 digitos numericos.', 'err');
+    }
+    $('#ruc-error').style.display = 'none';
+
+    const total = totalACobrar();
+    if (!total) return toast('No hay consumos activos para cobrar.', 'err');
+
+    if (c.metodo === 'EFECTIVO') {
+        const recibido = parseFloat(($('#input-recibido') || {}).value || 0);
+        if (!recibido || recibido < total) return toast('El monto recibido es menor al total a cobrar.', 'err');
+        c.recibido = round2(recibido);
+    } else {
+        c.recibido = total;
+    }
+
+    const items = c.partes.length ? partesPendientes()[0].items : consumoItems(c.tipo, c.id);
+    const calc = calcularCuenta(items);
+    const tipoComprobante = ruc ? 'FACTURA' : 'BOLETA';
+    const serie = ruc ? 'F001' : 'B001';
+    const correlativo = ruc ? ++DB.seq.comprobante_factura : ++DB.seq.comprobante_boleta;
+    const numero = serie + '-' + String(correlativo).padStart(6, '0');
+
+    const cuenta = {
+        id_cuenta: ++DB.seq.cuenta,
+        tipo: c.tipo,
+        ref: c.id,
+        fecha_apertura: new Date(),
+        fecha_cierre: new Date(),
+        subtotal: calc.subtotal,
+        igv: calc.igv,
+        total: calc.total,
+        estado: 'CERRADA',
+        id_comprobante: numero,
+        id_usuario_cajero: state.session.id_usuario
+    };
+    DB.cuenta.push(cuenta);
+
+    DB.pago.push({
+        id_pago: ++DB.seq.pago,
+        id_cuenta: cuenta.id_cuenta,
+        metodo: c.metodo,
+        monto: calc.total,
+        recibido: c.recibido,
+        vuelto: c.metodo === 'EFECTIVO' ? round2(c.recibido - calc.total) : 0,
+        fecha: new Date()
+    });
+
+    DB.comprobante.push({
+        numero: numero,
+        tipo: tipoComprobante,
+        ruc: ruc || null,
+        razon_social: ruc ? ($('#input-razon').value.trim() || 'CLIENTE FINAL') : null,
+        id_cuenta: cuenta.id_cuenta,
+        subtotal: calc.subtotal,
+        igv: calc.igv,
+        total: calc.total,
+        metodo: c.metodo,
+        fecha: new Date(),
+        estado: 'ACEPTADO'
+    });
+
+    if (c.partes.length) {
+        const activa = partesPendientes()[0];
+        activa.pagada = true;
+        activa.comprobante = numero;
+    } else {
+        pedidosActivos(c.tipo, c.id).forEach(p => p.estado = 'COBRADO');
+    }
+
+    logAudit('COBRO', 'cuenta', numero + ' por ' + money(calc.total) + ' (' + c.metodo + ') - cuenta ' + cuenta.id_cuenta);
+    c.ruc = ruc || null;
+    c.razon = ruc ? ($('#input-razon').value.trim() || 'CLIENTE FINAL') : null;
+    toast('Pago registrado: ' + numero + ' por ' + money(calc.total), 'ok');
+
+    mostrarComprobante(numero, cuenta, calc, c, tipoComprobante);
+
+    if (c.partes.length && partesPendientes().length === 0) {
+        pedidosActivos(c.tipo, c.id).forEach(p => p.estado = 'COBRADO');
+        liberarConsumo();
+    }
+}
+
+function mostrarComprobante(numero, cuenta, calc, c, tipoComprobante) {
+    const html = '<div class="comprobante">' +
+        '<h4>EL SABOR IQUENO</h4>' +
+        '<div style="font-size:0.7rem; color:#64748B;">RUC 20512345067 - Av. Los Libertadores 123, Ica</div>' +
+        '<div class="comp-num">' + tipoComprobante + ' ELECTRONICA ' + numero + '</div>' +
+        '<div class="comp-meta">' +
+        '<div>Fecha: ' + dateTimeStr(cuenta.fecha_cierre) + '</div>' +
+        '<div>Cliente: ' + escapeHtml(tipoComprobante === 'FACTURA' ? (c.razon || '') : 'Consumidor Final') + '</div>' +
+        (tipoComprobante === 'FACTURA' ? '<div>RUC: ' + escapeHtml(c.ruc || '') + '</div>' : '') +
+        '<div>Metodo de pago: ' + (c.metodo === 'EFECTIVO' ? 'Efectivo' : c.metodo === 'TARJETA' ? 'Tarjeta' : 'Digital (Yape/Plin)') + '</div>' +
+        '</div>' +
+        '<div style="text-align:left; font-size:0.78rem;">' +
+        calc.items.map(i => '<div style="display:flex; justify-content:space-between; padding:2px 0;"><span>' + i.cantidad + 'x ' + escapeHtml(i.nombre) + '</span><span>' + money(i.cantidad * i.precio) + '</span></div>').join('') +
+        '</div>' +
+        '<div class="comp-totals">' +
+        '<div><span>Subtotal</span><span>' + money(calc.subtotal) + '</span></div>' +
+        '<div><span>IGV (18%)</span><span>' + money(calc.igv) + '</span></div>' +
+        '<div class="grand"><span>Total</span><span>' + money(calc.total) + '</span></div>' +
+        '</div>' +
+        '<div class="comp-qr"></div>' +
+        '<div style="font-size:0.65rem; color:#94A3B8;">Representacion impresa de comprobante electronico. Autorizado por SUNAT.</div>' +
+        '</div>';
+
+    const vuelto = c.metodo === 'EFECTIVO' ? round2(c.recibido - calc.total) : 0;
+    const quedan = partesPendientes().length;
+
+    openModal('<i class="fa-solid fa-circle-check" style="color:var(--success);"></i> ' + (c.metodo === 'EFECTIVO' ? 'Pago en Efectivo Exitoso!' : c.metodo === 'TARJETA' ? 'Tarjeta Aprobada!' : 'Pago Digital Confirmado!'),
+        html + (c.metodo === 'EFECTIVO' ? '<div class="inline-note" style="margin-top:12px;"><i class="fa-solid fa-money-bill-wave"></i><span>Recibido: ' + money(c.recibido) + ' &middot; Vuelto: <strong>' + money(vuelto) + '</strong></span></div>' : '') +
+        (quedan ? '<div class="inline-note warn" style="margin-top:12px;"><i class="fa-solid fa-users"></i><span>Quedan ' + quedan + ' parte(s) por cobrar de esta cuenta.</span></div>' : ''),
+        [
+            { texto: '<i class="fa-solid fa-print"></i> Imprimir', clase: 'btn-secondary', accion: () => imprimirComprobante(numero, cuenta, calc, tipoComprobante, c) },
+            { texto: quedan ? 'Aceptar y continuar' : 'Aceptar y Liberar', clase: 'btn btn-success', accion: () => { closeModal(); if (!quedan) liberarConsumo(); else renderCajero(); } }
+        ], { ancho: true });
+}
+
+function imprimirComprobante(numero, cuenta, calc, tipoComprobante, c) {
+    printHTML(numero, '<div style="max-width:420px; margin:0 auto; border:1px solid #000; padding:18px; font-size:13px;">' +
+        '<h2 style="text-align:center; margin-bottom:4px;">EL SABOR IQUENO</h2>' +
+        '<p style="text-align:center; font-size:11px;">RUC 20512345067 - Ica, Peru</p>' +
+        '<p style="text-align:center; font-weight:bold; margin:10px 0;">' + tipoComprobante + ' ' + numero + '</p>' +
+        '<p>Fecha: ' + dateTimeStr(cuenta.fecha_cierre) + '<br>Cliente: ' + escapeHtml(tipoComprobante === 'FACTURA' ? (c.razon || '') : 'Consumidor Final') + '</p>' +
+        '<hr>' +
+        calc.items.map(i => '<div style="display:flex; justify-content:space-between;"><span>' + i.cantidad + 'x ' + escapeHtml(i.nombre) + '</span><span>' + money(i.cantidad * i.precio) + '</span></div>').join('') +
+        '<hr><div style="display:flex; justify-content:space-between;"><span>Subtotal</span><span>' + money(calc.subtotal) + '</span></div>' +
+        '<div style="display:flex; justify-content:space-between;"><span>IGV 18%</span><span>' + money(calc.igv) + '</span></div>' +
+        '<div style="display:flex; justify-content:space-between; font-weight:bold;"><span>TOTAL</span><span>' + money(calc.total) + '</span></div>' +
+        '<p style="text-align:center; margin-top:14px; font-size:11px;">Gracias por su preferencia</p></div>');
+}
+
+function liberarConsumo() {
+    const c = state.cashier;
+    if (c.tipo === 'SALON') {
+        const m = getMesa(c.id);
+        m.reservada = false;
+        logAudit('LIBERAR_MESA', 'mesa', 'Mesa ' + String(m.numero).padStart(2, '0') + ' liberada');
+    }
+    state.cashier = { tipo: null, id: null, metodo: state.cashier.metodo, partes: [], recibido: '' };
+    $('#input-ruc').value = '';
+    $('#input-razon').value = '';
+    renderCajero();
+}
+
+function irACobrar(pedidoId) {
+    const p = DB.pedido.find(x => x.id === Number(pedidoId));
+    if (!p) return;
+    if (PERMISOS[state.session.id_rol].includes('cajero')) {
+        switchTab('cajero');
+        selectCashierTarget(p.tipo, p.tipo === 'SALON' ? p.ref_mesa : p.ref_llevar);
+    } else {
+        toast('Su rol no tiene acceso al modulo de caja.', 'err');
+    }
+}
+
+/* ================================================================
+   10. MODULO INVENTARIO, COMPRAS Y KARDEX (RF09, RF10, RF11, RF12)
+   ================================================================ */
+
+const TIPO_MOV = {
+    INICIAL: 'Saldo inicial',
+    ENTRADA: 'Compra / Ingreso',
+    SALIDA: 'Consumo por comanda',
+    MERMA: 'Merma / Desperdicio',
+    AJUSTE: 'Ajuste de inventario'
+};
+
+function exportarCSV(nombre, filas) {
+    if (!filas.length) return toast('No hay datos para exportar.', 'warn');
+    const csv = filas.map(f => f.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(';')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombre + '_' + dateStr(new Date()).replace(/\//g, '-') + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    logAudit('EXPORTAR_REPORTE', 'reporte', nombre + '.csv');
+    toast('Archivo generado: ' + a.download, 'ok');
+}
+
+function renderInventario() {
+    $$('#inv-tabs .subtab').forEach(b => b.classList.toggle('active', b.dataset.sub === state.invTab));
+    if (state.invTab === 'insumos') renderVistaInsumos();
+    if (state.invTab === 'compras') renderVistaCompras();
+    if (state.invTab === 'kardex') renderVistaKardex();
+}
+
+function filtrarInsumos() {
+    const cat = state.filtroCategoriaInsumo || '';
+    const search = (state.filtroSearchInsumo || '').toLowerCase();
+    return DB.insumo.filter(i => (!cat || i.categoria === cat) && (!search || i.nombre.toLowerCase().includes(search)));
+}
+
+function cuerpoTablaInsumos() {
+    const lista = filtrarInsumos();
+    if (!lista.length) return '<tr><td colspan="9"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i>No hay insumos que coincidan con el filtro.</div></td></tr>';
+    return lista.map(i => {
+        const bajo = i.stock_actual <= i.stock_minimo;
+        const pct = Math.min(100, Math.round((i.stock_actual / Math.max(i.stock_minimo * 2, 0.01)) * 100));
+        return '<tr>' +
+            '<td><strong>' + escapeHtml(i.nombre) + '</strong></td>' +
+            '<td><span class="badge badge-neutral">' + escapeHtml(i.categoria) + '</span></td>' +
+            '<td>' + i.unidad + '</td>' +
+            '<td class="num"><strong>' + i.stock_actual + '</strong><div class="bar-track" style="height:5px; margin-top:4px;"><div class="bar-fill ' + (bajo ? 'fill-danger' : 'fill-ok') + '" style="width:' + pct + '%;"></div></div></td>' +
+            '<td class="num">' + i.stock_minimo + '</td>' +
+            '<td class="num">' + money(i.costo_unitario) + '</td>' +
+            '<td class="num">' + money(i.stock_actual * i.costo_unitario) + '</td>' +
+            '<td>' + (bajo ? '<span class="badge badge-danger"><i class="fa-solid fa-triangle-exclamation"></i> Stock minimo</span>' : '<span class="badge badge-ok">Normal</span>') + '</td>' +
+            '<td><div style="display:flex; gap:6px;">' +
+            '<button class="btn btn-secondary btn-sm" data-action="mover-insumo" data-id="' + i.id_insumo + '" data-mov="MERMA"><i class="fa-solid fa-trash-can"></i> Merma</button>' +
+            '<button class="btn btn-secondary btn-sm" data-action="mover-insumo" data-id="' + i.id_insumo + '" data-mov="AJUSTE"><i class="fa-solid fa-sliders"></i> Ajustar</button>' +
+            '</div></td></tr>';
+    }).join('');
+}
+
+function renderVistaInsumos() {
+    const criticos = insumosCriticos();
+    const valorInventario = round2(DB.insumo.reduce((a, i) => a + i.stock_actual * i.costo_unitario, 0));
+    const cat = state.filtroCategoriaInsumo || '';
+
+    let html = '<div class="kpi-grid">' +
+        '<div class="kpi-card"><span class="kpi-label">Insumos activos</span><span class="kpi-icon kpi-accent-info"><i class="fa-solid fa-boxes-stacked"></i></span><div class="kpi-value">' + DB.insumo.length + '</div><div class="kpi-foot">Categorias: ' + DB.categoria_insumo.length + '</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Valorizado</span><span class="kpi-icon kpi-accent-primary"><i class="fa-solid fa-sack-dollar"></i></span><div class="kpi-value">' + money(valorInventario) + '</div><div class="kpi-foot">stock x costo unitario</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">En stock minimo</span><span class="kpi-icon kpi-accent-warn"><i class="fa-solid fa-triangle-exclamation"></i></span><div class="kpi-value">' + criticos.length + '</div><div class="kpi-foot">Alertas RF10 activas</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Movimientos del dia</span><span class="kpi-icon kpi-accent-ok"><i class="fa-solid fa-arrow-right-arrow-left"></i></span><div class="kpi-value">' + DB.movimiento_inventario.filter(m => m.fecha.toDateString() === new Date().toDateString()).length + '</div><div class="kpi-foot">Entradas y salidas automaticas</div></div>' +
+        '</div>';
+
+    html += '<div class="card">' +
+        '<div class="card-title"><span><i class="fa-solid fa-box"></i> Control de stock por insumo</span>' +
+        '<button class="btn btn-secondary btn-sm" data-action="export-insumos"><i class="fa-solid fa-file-csv"></i> Exportar CSV</button></div>' +
+        '<div class="filter-bar">' +
+        '<div class="field"><label>Buscar</label><input type="text" data-filtro="insumos" value="' + escapeHtml(state.filtroSearchInsumo || '') + '" placeholder="Nombre del insumo"></div>' +
+        '<div class="field"><label>Categoria</label><select data-filtro="categoria"><option value="">Todas</option>' +
+        DB.categoria_insumo.map(c => '<option value="' + escapeHtml(c) + '"' + (cat === c ? ' selected' : '') + '>' + escapeHtml(c) + '</option>').join('') +
+        '</select></div>' +
+        '</div>';
+
+    html += '<div class="table-wrap"><table class="data-table"><thead><tr>' +
+        '<th>Insumo</th><th>Categoria</th><th>Unidad</th><th class="num">Stock actual</th><th class="num">Stock minimo</th><th class="num">Costo unit.</th><th class="num">Valorizado</th><th>Estado</th><th>Acciones</th>' +
+        '</tr></thead><tbody id="insumos-tbody">' + cuerpoTablaInsumos() + '</tbody></table></div></div>';
+
+    if (criticos.length) {
+        html += '<div class="card" style="margin-top:16px;"><div class="card-title"><span><i class="fa-solid fa-bell" style="color:var(--danger);"></i> Alertas de stock minimo (RF10)</span></div>' +
+            criticos.map(c => '<div class="inline-note danger" style="margin-bottom:8px;"><i class="fa-solid fa-triangle-exclamation"></i><span><strong>' + escapeHtml(c.nombre) + '</strong> tiene ' + c.stock_actual + ' ' + c.unidad + ' (minimo ' + c.stock_minimo + '). Registre una compra para reposicionarlo.</span></div>').join('') +
+            '</div>';
+    }
+
+    $('#inv-body').innerHTML = html;
+}
+
+function registrarMovimientoInsumo(id, tipo) {
+    const ins = getInsumo(id);
+    const esAjuste = tipo === 'AJUSTE';
+    openModal('<i class="fa-solid ' + (esAjuste ? 'fa-sliders' : 'fa-trash-can') + '" style="color:var(--warning);"></i> ' + (esAjuste ? 'Ajustar stock de ' : 'Registrar merma de ') + escapeHtml(ins.nombre),
+        '<div class="field"><label>' + (esAjuste ? 'Stock fisico real (' + ins.unidad + ')' : 'Cantidad de merma (' + ins.unidad + ')') + ':</label>' +
+        '<input type="number" step="0.01" min="0" id="input-mov-cant" value="' + (esAjuste ? ins.stock_actual : 0) + '"></div>' +
+        '<div class="field"><label>Motivo:</label><input type="text" id="input-mov-motivo" placeholder="Ej. producto vencido / conteo fisico"></div>',
+        [{ texto: 'Cancelar', clase: 'btn-secondary' }, { texto: 'Registrar', clase: 'btn btn-warning', accion: () => {
+            const cant = parseFloat($('#input-mov-cant').value || 0);
+            const motivo = $('#input-mov-motivo').value.trim() || 'Sin detalle';
+            if (isNaN(cant) || cant < 0) return toast('Ingrese una cantidad valida.', 'err');
+            if (!esAjuste && cant > ins.stock_actual) return toast('La merma no puede superar el stock actual.', 'err');
+            addMovimiento(id, tipo, esAjuste ? cant : cant, (esAjuste ? 'AJUSTE FISICO: ' : 'MERMA: ') + motivo);
+            logAudit(tipo, 'movimiento_inventario', ins.nombre + ' -> ' + cant + ' ' + ins.unidad + ' (' + motivo + ')');
+            closeModal();
+            toast('Movimiento registrado en el kardex.', 'ok');
+            renderInventario();
+        } }], { ancho: true });
+}
+
+function renderVistaCompras() {
+    if (!state.compraRows) state.compraRows = [{ id_insumo: DB.insumo[0].id_insumo, cantidad: 5, costo: DB.insumo[0].costo_unitario }];
+
+    let html = '<div class="grid-2">' +
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-cart-plus"></i> Registrar ingreso de insumos (RF11)</span></div>' +
+        '<div class="form-grid">' +
+        '<div class="field"><label>Proveedor:</label><select id="compra-proveedor">' + DB.proveedor.map(p => '<option value="' + p.id_proveedor + '">' + escapeHtml(p.razon_social) + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label>Fecha:</label><input type="date" id="compra-fecha" value="' + new Date().toISOString().slice(0, 10) + '"></div>' +
+        '<div class="field"><label>Comprobante:</label><input type="text" id="compra-doc" placeholder="F001-000123"></div>' +
+        '</div>' +
+        '<div style="margin-top:12px;"><p style="font-size:0.75rem; font-weight:800; color:#64748B; margin-bottom:6px;">Detalle de la compra</p>' +
+        state.compraRows.map((r, idx) =>
+            '<div style="display:grid; grid-template-columns:2fr 1fr 1fr auto; gap:8px; margin-bottom:8px;">' +
+            '<select data-compra="insumo" data-idx="' + idx + '">' + DB.insumo.map(i => '<option value="' + i.id_insumo + '"' + (r.id_insumo === i.id_insumo ? ' selected' : '') + '>' + escapeHtml(i.nombre) + '</option>').join('') + '</select>' +
+            '<input type="number" step="0.01" min="0" data-compra="cantidad" data-idx="' + idx + '" value="' + r.cantidad + '" placeholder="Cantidad">' +
+            '<input type="number" step="0.01" min="0" data-compra="costo" data-idx="' + idx + '" value="' + r.costo + '" placeholder="Costo unit.">' +
+            '<button class="btn btn-danger btn-sm" data-action="compra-del-row" data-idx="' + idx + '"><i class="fa-solid fa-xmark"></i></button>' +
+            '</div>'
+        ).join('') +
+        '<button class="btn btn-secondary btn-sm" data-action="compra-add-row"><i class="fa-solid fa-plus"></i> Agregar insumo</button>' +
+        '</div>' +
+        '<div class="form-actions"><button class="btn btn-success" data-action="compra-guardar"><i class="fa-solid fa-floppy-disk"></i> Guardar compra e ingresar stock</button></div>' +
+        '</div>' +
+
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-truck"></i> Ultimas compras</span><span class="badge badge-neutral">' + DB.compra.length + '</span></div>';
+
+    if (!DB.compra.length) {
+        html += '<div class="empty-state"><i class="fa-solid fa-receipt"></i>Todavia no se registran compras.</div>';
+    } else {
+        html += '<div class="table-wrap"><table class="data-table"><thead><tr><th>Compra</th><th>Proveedor</th><th>Fecha</th><th class="num">Items</th><th class="num">Total</th></tr></thead><tbody>' +
+            DB.compra.map(c => '<tr><td><strong>#' + c.id_compra + '</strong><br><span style="font-size:0.72rem; color:#64748B;">' + escapeHtml(c.documento || 's/doc') + '</span></td>' +
+                '<td>' + escapeHtml(c.proveedor) + '</td><td>' + dateStr(c.fecha) + '</td>' +
+                '<td class="num">' + c.detalle.length + '</td><td class="num"><strong>' + money(c.total) + '</strong></td></tr>').join('') +
+            '</tbody></table></div>';
+    }
+    html += '</div></div>';
+
+    $('#inv-body').innerHTML = html;
+}
+
+function guardarCompra() {
+    const provId = Number($('#compra-proveedor').value);
+    const fecha = $('#compra-fecha').value ? new Date($('#compra-fecha').value) : new Date();
+    const doc = $('#compra-doc').value.trim();
+
+    const detalle = state.compraRows.filter(r => r.id_insumo && r.cantidad > 0).map(r => ({
+        id_insumo: r.id_insumo,
+        cantidad: round2(r.cantidad),
+        costo_unitario: r.costo
+    }));
+    if (!detalle.length) return toast('Agregue al menos un insumo con cantidad mayor a cero.', 'err');
+
+    const total = round2(detalle.reduce((a, d) => a + d.cantidad * d.costo_unitario, 0));
+    const compra = {
+        id_compra: ++DB.seq.compra,
+        id_proveedor: provId,
+        proveedor: DB.proveedor.find(p => p.id_proveedor === provId).razon_social,
+        fecha: fecha,
+        documento: doc,
+        total: total,
+        detalle: detalle,
+        id_usuario: state.session.id_usuario
+    };
+    DB.compra.push(compra);
+    DB.detalle_compra.push.apply(DB.detalle_compra, detalle);
+
+    detalle.forEach(d => addMovimiento(d.id_insumo, 'ENTRADA', d.cantidad, 'COMPRA #' + compra.id_compra + (doc ? ' / ' + doc : '')));
+
+    logAudit('REGISTRAR_COMPRA', 'compra', 'Compra #' + compra.id_compra + ' por ' + money(total) + ' - ' + compra.proveedor);
+    state.compraRows = [{ id_insumo: DB.insumo[0].id_insumo, cantidad: 5, costo: DB.insumo[0].costo_unitario }];
+    toast('Compra #' + compra.id_compra + ' registrada. Stock actualizado.', 'ok');
+    renderInventario();
+}
+
+function renderVistaKardex() {
+    const f = state.kardexFiltro;
+    const movs = DB.movimiento_inventario.filter(m => {
+        const okIns = !f.insumo || m.id_insumo === f.insumo;
+        const okTipo = !f.tipo || m.tipo === f.tipo;
+        const okDesde = !f.desde || new Date(m.fecha) >= new Date(f.desde);
+        const okHasta = !f.hasta || new Date(m.fecha) <= new Date(f.hasta + 'T23:59:59');
+        return okIns && okTipo && okDesde && okHasta;
+    });
+
+    let html = '<div class="card">' +
+        '<div class="card-title"><span><i class="fa-solid fa-list-check"></i> Kardex de movimientos (tabla movimiento_inventario)</span>' +
+        '<button class="btn btn-secondary btn-sm" data-action="export-kardex"><i class="fa-solid fa-file-csv"></i> Exportar CSV</button></div>' +
+        '<div class="filter-bar">' +
+        '<div class="field"><label>Insumo</label><select data-kardex="insumo"><option value="">Todos</option>' +
+        DB.insumo.map(i => '<option value="' + i.id_insumo + '"' + (f.insumo === i.id_insumo ? ' selected' : '') + '>' + escapeHtml(i.nombre) + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label>Tipo</label><select data-kardex="tipo"><option value="">Todos</option>' +
+        Object.keys(TIPO_MOV).map(t => '<option value="' + t + '"' + (f.tipo === t ? ' selected' : '') + '>' + TIPO_MOV[t] + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label>Desde</label><input type="date" data-kardex="desde" value="' + f.desde + '"></div>' +
+        '<div class="field"><label>Hasta</label><input type="date" data-kardex="hasta" value="' + f.hasta + '"></div>' +
+        '<button class="btn btn-secondary btn-sm" data-action="kardex-limpiar"><i class="fa-solid fa-filter-circle-xmark"></i> Limpiar</button>' +
+        '</div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr>' +
+        '<th>#</th><th>Fecha</th><th>Insumo</th><th>Tipo</th><th class="num">Cantidad</th><th class="num">Saldo</th><th>Referencia</th><th>Usuario</th>' +
+        '</tr></thead><tbody>' +
+        (movs.length ? movs.slice(0, 120).map(m => {
+            const ins = getInsumo(m.id_insumo);
+            const signo = m.tipo === 'ENTRADA' ? '+' : (m.tipo === 'SALIDA' || m.tipo === 'MERMA') ? '-' : '=';
+            const color = m.tipo === 'ENTRADA' ? 'ok' : (m.tipo === 'SALIDA' || m.tipo === 'MERMA') ? 'danger' : 'neutral';
+            return '<tr><td>' + m.id_movimiento + '</td><td>' + dateTimeStr(m.fecha) + '</td>' +
+                '<td><strong>' + escapeHtml(ins.nombre) + '</strong></td>' +
+                '<td><span class="badge badge-' + color + '">' + TIPO_MOV[m.tipo] + '</span></td>' +
+                '<td class="num">' + signo + ' ' + m.cantidad + ' ' + ins.unidad + '</td>' +
+                '<td class="num"><strong>' + m.saldo + ' ' + ins.unidad + '</strong></td>' +
+                '<td style="font-size:0.75rem;">' + escapeHtml(m.referencia) + '</td>' +
+                '<td style="font-size:0.75rem;">' + escapeHtml(m.usuario) + '</td></tr>';
+        }).join('') : '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-filter"></i>No hay movimientos con los filtros aplicados.</div></td></tr>') +
+        '</tbody></table></div>' +
+        '<p style="font-size:0.72rem; color:#94A3B8; margin-top:10px;">Mostrando ' + Math.min(movs.length, 120) + ' de ' + movs.length + ' movimientos.</p>' +
+        '</div>';
+
+    $('#inv-body').innerHTML = html;
+}
+
+function conciliarInventario() {
+    let ok = 0;
+    const detalle = [];
+    DB.insumo.forEach(i => {
+        const movs = DB.movimiento_inventario.filter(m => m.id_insumo === i.id_insumo);
+        let esperado = 0;
+        movs.slice().reverse().forEach(m => {
+            if (m.tipo === 'ENTRADA') esperado = round2(esperado + m.cantidad);
+            else if (m.tipo === 'SALIDA' || m.tipo === 'MERMA') esperado = round2(esperado - m.cantidad);
+            else if (m.tipo === 'AJUSTE') esperado = m.cantidad;
+            else esperado = m.cantidad;
+        });
+        const diff = round2(i.stock_actual - esperado);
+        if (Math.abs(diff) < 0.001) ok++; else detalle.push({ insumo: i.nombre, esperado: esperado, actual: i.stock_actual, diff: diff });
+    });
+    const exactitud = round2((ok / DB.insumo.length) * 100);
+
+    openModal('<i class="fa-solid fa-scale-balanced" style="color:var(--success);"></i> Conciliacion de inventario (RNF06)',
+        '<p style="font-size:0.84rem;">Se recalculo el stock teorico de cada insumo a partir de sus movimientos en el kardex y se comparo con el stock almacenado en la tabla <code>insumo</code>.</p>' +
+        '<div class="kpi-grid"><div class="kpi-card"><span class="kpi-label">Exactitud</span><span class="kpi-icon kpi-accent-ok"><i class="fa-solid fa-bullseye"></i></span><div class="kpi-value">' + exactitud + '%</div><div class="kpi-foot">' + ok + ' de ' + DB.insumo.length + ' insumos cuadran</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Movimientos</span><span class="kpi-icon kpi-accent-info"><i class="fa-solid fa-arrow-right-arrow-left"></i></span><div class="kpi-value">' + DB.movimiento_inventario.length + '</div><div class="kpi-foot">Registrados en la bitacora</div></div></div>' +
+        (detalle.length ? '<div class="inline-note danger"><i class="fa-solid fa-triangle-exclamation"></i><span>Descuadres detectados: ' + detalle.map(d => escapeHtml(d.insumo) + ' (' + (d.diff > 0 ? '+' : '') + d.diff + ')').join(', ') + '</span></div>' : '<div class="inline-note"><i class="fa-solid fa-circle-check"></i><span>Todo el inventario cuadra con sus movimientos. El descuento de stock por transaccion es 100% preciso.</span></div>'),
+        [{ texto: 'Cerrar', clase: 'btn-secondary' }], { ancho: true });
+
+    logAudit('CONCILIAR_INVENTARIO', 'movimiento_inventario', 'Exactitud ' + exactitud + '%');
+}
+
+/* ================================================================
+   11. REPORTES GERENCIALES (2.3.2 del documento)
+   ================================================================ */
+
+function comprobantesHoy() {
+    const hoy = new Date().toDateString();
+    return DB.comprobante.filter(c => c.fecha.toDateString() === hoy);
+}
+
+function ventasPorHora() {
+    const buckets = [];
+    for (let h = 7; h <= 23; h++) buckets.push({ hora: h, total: 0, tickets: 0 });
+    DB.comprobante.forEach(c => {
+        const b = buckets.find(x => x.hora === c.fecha.getHours());
+        if (b) { b.total = round2(b.total + c.total); b.tickets++; }
+    });
+    return buckets;
+}
+
+function topPlatos() {
+    const map = {};
+    DB.pedido.filter(p => p.estado === 'COBRADO').forEach(p => p.items.forEach(i => {
+        if (!map[i.id_producto]) map[i.id_producto] = { nombre: i.nombre, cantidad: 0, total: 0 };
+        map[i.id_producto].cantidad += i.cantidad;
+        map[i.id_producto].total = round2(map[i.id_producto].total + i.cantidad * i.precio);
+    }));
+    return Object.keys(map).map(k => map[k]).sort((a, b) => b.total - a.total);
+}
+
+function tiempoPromedioAtencion() {
+    const listos = DB.pedido.filter(p => p.listo_en);
+    if (!listos.length) return null;
+    const total = listos.reduce((a, p) => a + (new Date(p.listo_en) - new Date(p.enviado_en)) / 60000, 0);
+    return round2(total / listos.length);
+}
+
+function tasaErrorComandas() {
+    const total = DB.pedido.length;
+    if (!total) return null;
+    const anulados = DB.pedido.filter(p => p.estado === 'ANULADO').length;
+    return round2((anulados / total) * 100);
+}
+
+function exactitudInventario() {
+    let ok = 0;
+    DB.insumo.forEach(i => {
+        const movs = DB.movimiento_inventario.filter(m => m.id_insumo === i.id_insumo);
+        let esperado = 0;
+        movs.slice().reverse().forEach(m => {
+            if (m.tipo === 'ENTRADA') esperado = round2(esperado + m.cantidad);
+            else if (m.tipo === 'SALIDA' || m.tipo === 'MERMA') esperado = round2(esperado - m.cantidad);
+            else esperado = m.cantidad;
+        });
+        if (Math.abs(round2(i.stock_actual - esperado)) < 0.001) ok++;
+    });
+    return { valor: round2((ok / DB.insumo.length) * 100), ok: ok, total: DB.insumo.length };
+}
+
+function renderReportes() {
+    const hoy = comprobantesHoy();
+    const totalVentas = round2(hoy.reduce((a, c) => a + c.total, 0));
+    const igv = round2(hoy.reduce((a, c) => a + c.igv, 0));
+    const ticketProm = hoy.length ? round2(totalVentas / hoy.length) : 0;
+    const tpa = tiempoPromedioAtencion();
+    const err = tasaErrorComandas();
+    const exa = exactitudInventario();
+
+    let html = '<div class="kpi-grid">' +
+        '<div class="kpi-card"><span class="kpi-label">Ventas del dia</span><span class="kpi-icon kpi-accent-primary"><i class="fa-solid fa-sack-dollar"></i></span><div class="kpi-value">' + money(totalVentas) + '</div><div class="kpi-foot">' + hoy.length + ' comprobante(s) emitido(s)</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">IGV del dia</span><span class="kpi-icon kpi-accent-info"><i class="fa-solid fa-receipt"></i></span><div class="kpi-value">' + money(igv) + '</div><div class="kpi-foot">18% sobre el subtotal</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Ticket promedio</span><span class="kpi-icon kpi-accent-ok"><i class="fa-solid fa-chart-line"></i></span><div class="kpi-value">' + money(ticketProm) + '</div><div class="kpi-foot">Consumo medio por cuenta</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Tiempo de atencion</span><span class="kpi-icon kpi-accent-ok"><i class="fa-solid fa-stopwatch"></i></span><div class="kpi-value">' + (tpa == null ? '--' : tpa + ' min') + '</div><div class="kpi-foot">Meta: reducir 30% vs. proceso manual</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Tasa de error</span><span class="kpi-icon kpi-accent-warn"><i class="fa-solid fa-triangle-exclamation"></i></span><div class="kpi-value">' + (err == null ? '--' : err + '%') + '</div><div class="kpi-foot">Comandas anuladas / total</div></div>' +
+        '<div class="kpi-card"><span class="kpi-label">Exactitud de stock</span><span class="kpi-icon kpi-accent-ok"><i class="fa-solid fa-bullseye"></i></span><div class="kpi-value">' + exa.valor + '%</div><div class="kpi-foot">' + exa.ok + '/' + exa.total + ' insumos cuadran (RNF06)</div></div>' +
+        '</div>';
+
+    const horas = ventasPorHora();
+    const maxHora = Math.max.apply(null, horas.map(h => h.total).concat([1]));
+    html += '<div class="grid-2">' +
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-chart-column"></i> Ventas por hora y franja</span></div>' +
+        horas.filter(h => h.total > 0).map(h =>
+            '<div class="bar-row"><span class="bar-label">' + String(h.hora).padStart(2, '0') + ':00 - ' + turnoDe(new Date(2026, 0, 1, h.hora)).id + '</span>' +
+            '<span class="bar-track"><span class="bar-fill" style="width:' + Math.round((h.total / maxHora) * 100) + '%">' + h.tickets + ' tk</span></span>' +
+            '<span class="bar-value">' + money(h.total) + '</span></div>'
+        ).join('') || '<div class="empty-state"><i class="fa-solid fa-chart-simple"></i>Aun no hay ventas registradas en el dia.</div>' +
+        '</div>';
+
+    const porTurno = { ALMUERZO: 0, TARDE: 0, NOCHE: 0 };
+    hoy.forEach(c => porTurno[turnoDe(c.fecha).id] = round2(porTurno[turnoDe(c.fecha).id] + c.total));
+    const maxTurno = Math.max.apply(null, Object.values(porTurno).concat([1]));
+    html += '<div class="card"><div class="card-title"><span><i class="fa-solid fa-clock"></i> Ventas por turno</span></div>' +
+        Object.keys(porTurno).map(k =>
+            '<div class="bar-row"><span class="bar-label">' + (k === 'ALMUERZO' ? 'Almuerzo' : k === 'TARDE' ? 'Tarde' : 'Noche') + '</span>' +
+            '<span class="bar-track"><span class="bar-fill fill-ok" style="width:' + Math.round((porTurno[k] / maxTurno) * 100) + '%"></span></span>' +
+            '<span class="bar-value">' + money(porTurno[k]) + '</span></div>'
+        ).join('') +
+        '</div></div>';
+
+    const platos = topPlatos();
+    const maxPlato = platos.length ? platos[0].total : 1;
+    html += '<div class="grid-2" style="margin-top:16px;">' +
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-utensils"></i> Platos mas solicitados</span></div>' +
+        (platos.length ? platos.slice(0, 8).map(p =>
+            '<div class="bar-row"><span class="bar-label">' + escapeHtml(p.nombre) + '</span>' +
+            '<span class="bar-track"><span class="bar-fill" style="width:' + Math.round((p.total / maxPlato) * 100) + '%;">' + p.cantidad + '</span></span>' +
+            '<span class="bar-value">' + money(p.total) + '</span></div>'
+        ).join('') : '<div class="empty-state"><i class="fa-solid fa-utensils"></i>Sin ventas cobradas para generar el ranking.</div>') +
+        '</div>';
+
+    const metodos = { EFECTIVO: 0, TARJETA: 0, DIGITAL: 0 };
+    DB.pago.forEach(p => metodos[p.metodo] = round2((metodos[p.metodo] || 0) + p.monto));
+    const maxMet = Math.max.apply(null, Object.values(metodos).concat([1]));
+    html += '<div class="card"><div class="card-title"><span><i class="fa-solid fa-credit-card"></i> Ventas por metodo de pago</span></div>' +
+        Object.keys(metodos).map(k =>
+            '<div class="bar-row"><span class="bar-label">' + (k === 'EFECTIVO' ? 'Efectivo' : k === 'TARJETA' ? 'Tarjeta' : 'Digital') + '</span>' +
+            '<span class="bar-track"><span class="bar-fill fill-warn" style="width:' + Math.round((metodos[k] / maxMet) * 100) + '%"></span></span>' +
+            '<span class="bar-value">' + money(metodos[k]) + '</span></div>'
+        ).join('') +
+        '</div></div>';
+
+    const desde = state.repDesde || dateStr(daysAgo(7)).split('/').reverse().join('-');
+    const hasta = state.repHasta || new Date().toISOString().slice(0, 10);
+    const consumo = DB.insumo.map(i => {
+        const movs = DB.movimiento_inventario.filter(m => m.id_insumo === i.id_insumo &&
+            m.fecha >= new Date(desde + 'T00:00:00') && m.fecha <= new Date(hasta + 'T23:59:59'));
+        const entradas = round2(movs.filter(m => m.tipo === 'ENTRADA').reduce((a, m) => a + m.cantidad, 0));
+        const salidas = round2(movs.filter(m => m.tipo === 'SALIDA').reduce((a, m) => a + m.cantidad, 0));
+        const mermas = round2(movs.filter(m => m.tipo === 'MERMA').reduce((a, m) => a + m.cantidad, 0));
+        return { insumo: i, entradas: entradas, salidas: salidas, mermas: mermas, stock: i.stock_actual };
+    }).filter(c => c.entradas > 0 || c.salidas > 0 || c.mermas > 0);
+
+    html += '<div class="card" style="margin-top:16px;">' +
+        '<div class="card-title"><span><i class="fa-solid fa-clipboard-list"></i> Consumo de inventario por periodo (RF12)</span>' +
+        '<div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">' +
+        '<input type="date" class="input-sm" data-rep="desde" value="' + desde + '" style="width:150px;">' +
+        '<input type="date" class="input-sm" data-rep="hasta" value="' + hasta + '" style="width:150px;">' +
+        '<button class="btn btn-secondary btn-sm" data-action="rep-consumo"><i class="fa-solid fa-filter"></i> Aplicar</button>' +
+        '<button class="btn btn-secondary btn-sm" data-action="export-consumo"><i class="fa-solid fa-file-csv"></i> CSV</button></div></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Insumo</th><th class="num">Entradas</th><th class="num">Salidas por venta</th><th class="num">Merma</th><th class="num">Stock actual</th><th class="num">Costo teorico consumido</th></tr></thead><tbody>' +
+        (consumo.length ? consumo.map(c =>
+            '<tr><td><strong>' + escapeHtml(c.insumo.nombre) + '</strong></td>' +
+            '<td class="num" style="color:#047857;">+' + c.entradas + ' ' + c.insumo.unidad + '</td>' +
+            '<td class="num" style="color:#B91C1C;">-' + c.salidas + ' ' + c.insumo.unidad + '</td>' +
+            '<td class="num" style="color:#B45309;">' + (c.mermas ? '-' + c.mermas : '0.00') + ' ' + c.insumo.unidad + '</td>' +
+            '<td class="num"><strong>' + c.stock + ' ' + c.insumo.unidad + '</strong></td>' +
+            '<td class="num">' + money(c.salidas * c.insumo.costo_unitario) + '</td></tr>'
+        ).join('') : '<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-box"></i>Sin movimientos en el periodo seleccionado.</div></td></tr>') +
+        '</tbody></table></div></div>';
+
+    html += '<div class="card" style="margin-top:16px;">' +
+        '<div class="card-title"><span><i class="fa-solid fa-file-invoice"></i> Comprobantes emitidos</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Comprobante</th><th>Fecha</th><th>Cliente</th><th>Metodo</th><th class="num">Total</th></tr></thead><tbody>' +
+        (DB.comprobante.length ? DB.comprobante.slice().reverse().map(c =>
+            '<tr><td><strong>' + c.numero + '</strong> <span class="badge badge-' + (c.tipo === 'FACTURA' ? 'info' : 'purple') + '">' + c.tipo + '</span></td>' +
+            '<td>' + dateTimeStr(c.fecha) + '</td>' +
+            '<td>' + escapeHtml(c.razon_social || 'Consumidor Final') + '</td>' +
+            '<td>' + (c.metodo === 'EFECTIVO' ? 'Efectivo' : c.metodo === 'TARJETA' ? 'Tarjeta' : 'Digital') + '</td>' +
+            '<td class="num"><strong>' + money(c.total) + '</strong></td></tr>'
+        ).join('') : '<tr><td colspan="5"><div class="empty-state"><i class="fa-solid fa-receipt"></i>Sin comprobantes emitidos.</div></td></tr>') +
+        '</tbody></table></div></div>';
+
+    $('#rep-body').innerHTML = html;
+}
+
+function exportarReporteGeneral() {
+    const filas = [['Indicador', 'Valor']];
+    const hoy = comprobantesHoy();
+    filas.push(['Ventas del dia', round2(hoy.reduce((a, c) => a + c.total, 0))]);
+    filas.push(['Comprobantes emitidos', hoy.length]);
+    filas.push(['IGV del dia', round2(hoy.reduce((a, c) => a + c.igv, 0))]);
+    filas.push(['Tiempo promedio de atencion (min)', tiempoPromedioAtencion() == null ? 'n/d' : tiempoPromedioAtencion()]);
+    filas.push(['Tasa de error de comandas (%)', tasaErrorComandas() == null ? 'n/d' : tasaErrorComandas()]);
+    filas.push(['Exactitud de inventario (%)', exactitudInventario().valor]);
+    filas.push([]);
+    filas.push(['TOP PLATOS', 'Cantidad', 'Total']);
+    topPlatos().forEach(p => filas.push([p.nombre, p.cantidad, p.total]));
+    filas.push([]);
+    filas.push(['INSUMOS', 'Stock actual', 'Stock minimo', 'Estado']);
+    DB.insumo.forEach(i => filas.push([i.nombre, i.stock_actual, i.stock_minimo, i.stock_actual <= i.stock_minimo ? 'STOCK MINIMO' : 'Normal']));
+    exportarCSV('reporte_gerencial', filas);
+}
+
+/* ================================================================
+   12. ADMINISTRACION: USUARIOS, ROLES, PERSONAL, AUDITORIA Y MENU
+   ================================================================ */
+
+const MODULOS = ['mesero', 'cocina', 'cajero', 'inventario', 'reportes', 'admin'];
+
+function renderAdmin() {
+    $$('#adm-tabs .subtab').forEach(b => b.classList.toggle('active', b.dataset.sub === state.admTab));
+    if (state.admTab === 'usuarios') renderAdminUsuarios();
+    if (state.admTab === 'personal') renderAdminPersonal();
+    if (state.admTab === 'auditoria') renderAdminAuditoria();
+    if (state.admTab === 'menu') renderAdminMenu();
+}
+
+function renderAdminUsuarios() {
+    let html = '<div class="grid-2">' +
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-users"></i> Usuarios del sistema (RF13 / RF14)</span><span class="badge badge-neutral">' + DB.usuario.filter(u => u.activo).length + ' activos</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Usuario</th><th>Rol</th><th>Ultimo acceso</th><th>Estado</th><th></th></tr></thead><tbody>' +
+        DB.usuario.map(u => {
+            const rol = getRol(u.id_rol);
+            return '<tr><td><strong>' + escapeHtml(u.nombre + ' ' + u.apellido) + '</strong><br><span style="font-size:0.72rem; color:#64748B;">' + escapeHtml(u.email) + '</span></td>' +
+                '<td><span class="badge badge-purple">' + rol.nombre + '</span></td>' +
+                '<td style="font-size:0.75rem;">' + (u.ultimo_login ? dateTimeStr(u.ultimo_login) : 'n/d') + '</td>' +
+                '<td>' + (u.activo ? '<span class="badge badge-ok">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>') + '</td>' +
+                '<td><button class="btn btn-secondary btn-sm" data-action="user-toggle" data-id="' + u.id_usuario + '">' + (u.activo ? 'Desactivar' : 'Activar') + '</button></td></tr>';
+        }).join('') +
+        '</tbody></table></div></div>' +
+
+        '<div class="card"><div class="card-title"><span><i class="fa-solid fa-user-plus"></i> Registrar nuevo usuario</span></div>' +
+        '<div class="form-grid">' +
+        '<div class="field"><label>Nombres:</label><input type="text" id="user-nombre" placeholder="Ej. Juan"></div>' +
+        '<div class="field"><label>Apellidos:</label><input type="text" id="user-apellido" placeholder="Ej. Perez"></div>' +
+        '<div class="field"><label>Correo:</label><input type="email" id="user-email" placeholder="usuario@saboriqueno.pe"></div>' +
+        '<div class="field"><label>Telefono:</label><input type="text" id="user-tel" placeholder="956 000 000"></div>' +
+        '<div class="field"><label>Rol:</label><select id="user-rol">' + DB.rol.map(r => '<option value="' + r.id_rol + '">' + r.nombre + '</option>').join('') + '</select></div>' +
+        '<div class="field"><label>Contrasena temporal:</label><input type="text" id="user-pass" value="1234"></div>' +
+        '</div>' +
+        '<div class="form-actions"><button class="btn btn-success" data-action="user-new"><i class="fa-solid fa-floppy-disk"></i> Crear usuario</button></div>' +
+        '</div></div>';
+
+    html += '<div class="card" style="margin-top:16px;"><div class="card-title"><span><i class="fa-solid fa-key"></i> Matriz de permisos por rol (RBAC)</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Rol</th>' + MODULOS.map(m => '<th>' + m.charAt(0).toUpperCase() + m.slice(1) + '</th>').join('') + '</tr></thead><tbody>' +
+        DB.rol.map(r => '<tr><td><strong>' + r.nombre + '</strong><br><span style="font-size:0.72rem; color:#64748B;">' + escapeHtml(r.descripcion) + '</span></td>' +
+            MODULOS.map(m => '<td>' + (PERMISOS[r.id_rol].includes(m) ? '<i class="fa-solid fa-circle-check" style="color:var(--success);"></i>' : '<i class="fa-solid fa-circle-xmark" style="color:#CBD5E1;"></i>') + '</td>').join('') +
+            '</tr>').join('') +
+        '</tbody></table></div></div>';
+
+    $('#adm-body').innerHTML = html;
+}
+
+function crearUsuario() {
+    const nombre = $('#user-nombre').value.trim();
+    const apellido = $('#user-apellido').value.trim();
+    const email = $('#user-email').value.trim().toLowerCase();
+    const rol = $('#user-rol').value;
+    const tel = $('#user-tel').value.trim();
+    const pass = $('#user-pass').value.trim() || '1234';
+
+    if (!nombre || !apellido || !email) return toast('Complete nombres, apellidos y correo.', 'err');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return toast('El correo no tiene un formato valido.', 'err');
+    if (DB.usuario.some(u => u.email.toLowerCase() === email)) return toast('El correo ya esta registrado en la tabla usuario.', 'err');
+    if (!PERMISOS[rol].length) return toast('El rol seleccionado no tiene permisos definidos.', 'err');
+
+    const nuevo = {
+        id_usuario: ++DB.seq.usuario,
+        id_rol: rol,
+        nombre: nombre,
+        apellido: apellido,
+        email: email,
+        password_hash: hashPass(pass),
+        telefono: tel,
+        activo: true,
+        ultimo_login: null
+    };
+    DB.usuario.push(nuevo);
+    logAudit('CREAR_USUARIO', 'usuario', nuevo.email + ' con rol ' + rol);
+    toast('Usuario creado: ' + nuevo.email, 'ok');
+    renderDemoUsers();
+    renderAdminUsuarios();
+}
+
+function toggleUsuario(id) {
+    const u = DB.usuario.find(x => x.id_usuario === Number(id));
+    if (!u) return;
+    if (u.id_usuario === state.session.id_usuario) return toast('No puede desactivar su propia cuenta.', 'err');
+    u.activo = !u.activo;
+    logAudit(u.activo ? 'ACTIVAR_USUARIO' : 'DESACTIVAR_USUARIO', 'usuario', u.email);
+    toast('Usuario ' + (u.activo ? 'activado' : 'desactivado') + ' (borrado logico).', 'warn');
+    renderAdminUsuarios();
+}
+
+function renderAdminPersonal() {
+    let html = '<div class="card"><div class="card-title"><span><i class="fa-solid fa-id-badge"></i> Personal y turnos asignados</span><span class="badge badge-neutral">' + DB.personal.length + ' personas</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Personal</th><th>Cargo</th><th>Turno asignado</th><th>Horario</th><th>Estado</th></tr></thead><tbody>' +
+        DB.personal.map(p => {
+            const t = DB.turno.find(x => x.id_turno === p.turno);
+            return '<tr><td><strong>' + escapeHtml(p.nombre) + '</strong></td><td>' + escapeHtml(p.cargo) + '</td>' +
+                '<td><select class="input-sm" style="width:auto;" data-turno="' + p.id_personal + '">' + DB.turno.map(x => '<option value="' + x.id_turno + '"' + (p.turno === x.id_turno ? ' selected' : '') + '>' + x.nombre + '</option>').join('') + '</select></td>' +
+                '<td style="font-size:0.75rem;">' + t.inicio + ' - ' + t.fin + '</td>' +
+                '<td>' + (p.activo ? '<span class="badge badge-ok">Activo</span>' : '<span class="badge badge-danger">Inactivo</span>') + '</td></tr>';
+        }).join('') +
+        '</tbody></table></div></div>';
+
+    html += '<div class="card" style="margin-top:16px;"><div class="card-title"><span><i class="fa-solid fa-calendar-days"></i> Turnos definidos (tabla turno)</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Codigo</th><th>Turno</th><th>Inicio</th><th>Fin</th><th class="num">Personas asignadas</th></tr></thead><tbody>' +
+        DB.turno.map(t => '<tr><td><strong>' + t.id_turno + '</strong></td><td>' + t.nombre + '</td><td>' + t.inicio + '</td><td>' + t.fin + '</td>' +
+            '<td class="num">' + DB.personal.filter(p => p.turno === t.id_turno).length + '</td></tr>').join('') +
+        '</tbody></table></div></div>';
+
+    $('#adm-body').innerHTML = html;
+}
+
+function renderAdminAuditoria() {
+    const filtro = (state.filtroAuditoria || '').toLowerCase();
+    const lista = DB.auditoria.filter(a => !filtro || (a.usuario + ' ' + a.accion + ' ' + a.entidad + ' ' + a.detalle).toLowerCase().includes(filtro));
+
+    let html = '<div class="card"><div class="card-title"><span><i class="fa-solid fa-clipboard-list"></i> Bitacora de auditoria (RF15)</span>' +
+        '<div style="display:flex; gap:8px;">' +
+        '<input type="text" class="input-sm" data-filtro="auditoria" value="' + escapeHtml(state.filtroAuditoria || '') + '" placeholder="Filtrar por usuario o accion" style="width:230px;">' +
+        '<button class="btn btn-secondary btn-sm" data-action="export-auditoria"><i class="fa-solid fa-file-csv"></i> CSV</button></div></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>#</th><th>Fecha y hora</th><th>Usuario</th><th>Rol</th><th>Accion</th><th>Entidad</th><th>Detalle</th><th>IP</th></tr></thead><tbody>' +
+        (lista.length ? lista.slice(0, 150).map(a =>
+            '<tr><td>' + a.id_auditoria + '</td><td style="font-size:0.75rem;">' + dateTimeStr(a.fecha) + '</td>' +
+            '<td><strong>' + escapeHtml(a.usuario) + '</strong></td><td><span class="badge badge-neutral">' + a.id_rol + '</span></td>' +
+            '<td><span class="badge badge-info">' + escapeHtml(a.accion) + '</span></td><td>' + escapeHtml(a.entidad) + '</td>' +
+            '<td style="font-size:0.75rem; color:#64748B;">' + escapeHtml(a.detalle) + '</td><td style="font-size:0.72rem;">' + a.ip + '</td></tr>'
+        ).join('') : '<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-magnifying-glass"></i>Sin registros para el filtro aplicado.</div></td></tr>') +
+        '</tbody></table></div>' +
+        '<p style="font-size:0.72rem; color:#94A3B8; margin-top:10px;">Mostrando ' + Math.min(lista.length, 150) + ' de ' + lista.length + ' eventos. El borrado de registros es logico: nada se elimina fisicamente.</p>' +
+        '</div>';
+
+    $('#adm-body').innerHTML = html;
+}
+
+function costoReceta(p) {
+    return round2((p.receta || []).reduce((a, par) => a + par[1] * getInsumo(par[0]).costo_unitario, 0));
+}
+
+function renderAdminMenu() {
+    const editando = state.recetaProducto;
+
+    let html = '<div class="card"><div class="card-title"><span><i class="fa-solid fa-utensils"></i> Catalogo del menu y recetas (escandallo)</span><span class="badge badge-neutral">' + DB.producto.length + ' productos</span></div>' +
+        '<div class="table-wrap"><table class="data-table"><thead><tr><th>Producto</th><th>Categoria</th><th class="num">Precio venta</th><th class="num">Costo receta</th><th class="num">Margen</th><th>Receta</th><th></th></tr></thead><tbody>' +
+        DB.producto.map(p => {
+            const costo = costoReceta(p);
+            const margen = p.precio_venta > 0 ? round2(((p.precio_venta - costo) / p.precio_venta) * 100) : 0;
+            return '<tr><td><strong>' + escapeHtml(p.nombre) + '</strong><br><span style="font-size:0.72rem; color:#64748B;">' + escapeHtml(p.descripcion) + '</span></td>' +
+                '<td><span class="badge badge-neutral">' + escapeHtml((DB.categoria_producto.find(c => c.id_categoria_producto === p.id_categoria_producto) || {}).nombre) + '</span></td>' +
+                '<td class="num"><input type="number" step="0.01" min="0" class="input-sm" style="width:88px; text-align:right;" data-precio="' + p.id_producto + '" value="' + p.precio_venta + '"></td>' +
+                '<td class="num">' + money(costo) + '</td>' +
+                '<td class="num"><span class="badge badge-' + (margen > 60 ? 'ok' : 'warn') + '">' + margen + '%</span></td>' +
+                '<td style="font-size:0.72rem;">' + (p.receta || []).length + ' insumo(s)</td>' +
+                '<td><button class="btn btn-info btn-sm" data-action="receta-edit" data-id="' + p.id_producto + '"><i class="fa-solid fa-sliders"></i> ' + (editando === p.id_producto ? 'Cerrar' : 'Editar receta') + '</button></td></tr>';
+        }).join('') +
+        '</tbody></table></div></div>';
+
+    if (editando) {
+        const prod = getProducto(editando);
+        const receta = prod.receta || [];
+        html += '<div class="card" style="margin-top:16px;"><div class="card-title"><span><i class="fa-solid fa-kitchen-can"></i> Receta de ' + escapeHtml(prod.nombre) + '</span></div>' +
+            '<p style="font-size:0.8rem; color:#64748B; margin-bottom:12px;">La receta define que insumos se descuentan del inventario cada vez que se confirma una comanda (RF09).</p>' +
+            receta.map((par, idx) =>
+                '<div style="display:grid; grid-template-columns:2fr 1fr auto; gap:8px; margin-bottom:8px;">' +
+                '<select class="input-sm" data-receta="insumo" data-idx="' + idx + '">' + DB.insumo.map(i => '<option value="' + i.id_insumo + '"' + (par[0] === i.id_insumo ? ' selected' : '') + '>' + escapeHtml(i.nombre) + '</option>').join('') + '</select>' +
+                '<input type="number" step="0.01" min="0" class="input-sm" data-receta="cantidad" data-idx="' + idx + '" value="' + par[1] + '">' +
+                '<button class="btn btn-danger btn-sm" data-action="receta-del" data-idx="' + idx + '"><i class="fa-solid fa-xmark"></i></button>' +
+                '</div>'
+            ).join('') +
+            '<div class="form-actions"><button class="btn btn-secondary btn-sm" data-action="receta-add"><i class="fa-solid fa-plus"></i> Agregar insumo</button>' +
+            '<button class="btn btn-success btn-sm" data-action="receta-save"><i class="fa-solid fa-floppy-disk"></i> Guardar receta</button></div>' +
+            '</div>';
+    }
+
+    $('#adm-body').innerHTML = html;
+}
+
+/* ================================================================
+   13. INICIALIZACION Y DELEGACION DE EVENTOS
+   ================================================================ */
+
+function init() {
+    renderDemoUsers();
+    state.compraRows = [{ id_insumo: DB.insumo[0].id_insumo, cantidad: 5, costo: DB.insumo[0].costo_unitario }];
+    logAudit('INICIO_SISTEMA', 'sistema', 'Prototipo v2 inicializado con ' + DB.producto.length + ' productos y ' + DB.insumo.length + ' insumos');
+    setInterval(actualizarChipsTiempo, 30000);
+}
+
+const ACCIONES = {
+    'do-login': doLogin,
+    'do-logout': doLogout,
+    'fill-login': (el) => {
+        $('#login-email').value = el.dataset.email;
+        $('#login-password').value = '1234';
+        $('#login-error').style.display = 'none';
+    },
+    'switch-tab': el => switchTab(el.dataset.tab),
+    'toggle-sidebar': () => $('#sidebar').classList.toggle('open'),
+    'select-table': el => selectTable(el.dataset.id),
+    'open-takeaway': openTakeaway,
+    'back-to-tables': backToTables,
+    'qty': el => changeQty(el.dataset.id, Number(el.dataset.delta)),
+    'menu-cat': el => {
+        state.categoriaMenu = el.dataset.cat;
+        renderMenuCategorias();
+        renderMenuList();
+        updateQtyLabels();
+    },
+    'send-order': sendOrder,
+    'clear-selection': () => {
+        state.selection = {};
+        state.notas = {};
+        state.editPedidoId = null;
+        renderMenuList();
+        updateQtyLabels();
+        renderCart();
+    },
+    'open-comandas': abrirComandas,
+    'edit-comanda': el => editarComanda(el.dataset.id),
+    'anular-comanda': el => anularComanda(el.dataset.id),
+    'kds-status': el => kdsChangeStatus(el.dataset.id, el.dataset.status),
+    'kds-print': el => imprimirComanda(el.dataset.id),
+    'kds-cobrar': el => irACobrar(el.dataset.id),
+    'print-comandas': imprimirComandasDelDia,
+    'refresh': () => { render(); toast('Vista actualizada desde la base de datos.', 'info'); },
+    'cashier-select': el => selectCashierTarget(el.dataset.tipo, el.dataset.id),
+    'select-paymethod': el => selectPayMethod(el.dataset.method),
+    'open-split': abrirDivision,
+    'process-payment': processPayment,
+    'inv-tab': el => { state.invTab = el.dataset.sub; renderInventario(); },
+    'mover-insumo': el => registrarMovimientoInsumo(el.dataset.id, el.dataset.mov),
+    'compra-add-row': () => {
+        state.compraRows.push({ id_insumo: DB.insumo[0].id_insumo, cantidad: 1, costo: DB.insumo[0].costo_unitario });
+        renderVistaCompras();
+    },
+    'compra-del-row': el => {
+        state.compraRows.splice(Number(el.dataset.idx), 1);
+        if (!state.compraRows.length) state.compraRows.push({ id_insumo: DB.insumo[0].id_insumo, cantidad: 1, costo: DB.insumo[0].costo_unitario });
+        renderVistaCompras();
+    },
+    'compra-guardar': guardarCompra,
+    'kardex-limpiar': () => { state.kardexFiltro = { insumo: '', tipo: '', desde: '', hasta: '' }; renderVistaKardex(); },
+    'conciliar': conciliarInventario,
+    'export-insumos': () => exportarCSV('inventario_insumos', [['Insumo', 'Categoria', 'Unidad', 'Stock actual', 'Stock minimo', 'Costo unitario', 'Valorizado', 'Estado']]
+        .concat(DB.insumo.map(i => [i.nombre, i.categoria, i.unidad, i.stock_actual, i.stock_minimo, i.costo_unitario, round2(i.stock_actual * i.costo_unitario), i.stock_actual <= i.stock_minimo ? 'STOCK MINIMO' : 'Normal']))),
+    'export-kardex': () => exportarCSV('kardex', [['Fecha', 'Insumo', 'Tipo', 'Cantidad', 'Saldo', 'Referencia', 'Usuario']]
+        .concat(DB.movimiento_inventario.map(m => [dateTimeStr(m.fecha), getInsumo(m.id_insumo).nombre, TIPO_MOV[m.tipo], m.cantidad, m.saldo, m.referencia, m.usuario]))),
+    'export-reporte': exportarReporteGeneral,
+    'rep-consumo': (el) => {
+        const desde = $('[data-rep="desde"]').value;
+        const hasta = $('[data-rep="hasta"]').value;
+        state.repDesde = desde;
+        state.repHasta = hasta;
+        renderReportes();
+    },
+    'export-consumo': () => {
+        const filas = [['Insumo', 'Unidad', 'Stock actual', 'Stock minimo', 'Estado']];
+        DB.insumo.forEach(i => filas.push([i.nombre, i.unidad, i.stock_actual, i.stock_minimo, i.stock_actual <= i.stock_minimo ? 'STOCK MINIMO' : 'Normal']));
+        exportarCSV('consumo_inventario', filas);
+    },
+    'adm-tab': el => { state.admTab = el.dataset.sub; renderAdmin(); },
+    'user-new': crearUsuario,
+    'user-toggle': el => toggleUsuario(el.dataset.id),
+    'export-auditoria': () => exportarCSV('auditoria', [['Fecha', 'Usuario', 'Rol', 'Accion', 'Entidad', 'Detalle', 'IP']]
+        .concat(DB.auditoria.map(a => [dateTimeStr(a.fecha), a.usuario, a.id_rol, a.accion, a.entidad, a.detalle, a.ip]))),
+    'receta-edit': el => {
+        state.recetaProducto = state.recetaProducto === el.dataset.id ? null : el.dataset.id;
+        renderAdminMenu();
+    },
+    'receta-add': () => {
+        const prod = getProducto(state.recetaProducto);
+        prod.receta.push([DB.insumo[0].id_insumo, 0.1]);
+        renderAdminMenu();
+    },
+    'receta-del': el => {
+        getProducto(state.recetaProducto).receta.splice(Number(el.dataset.idx), 1);
+        renderAdminMenu();
+    },
+    'receta-save': () => {
+        logAudit('ACTUALIZAR_RECETA', 'producto', 'Receta de ' + getProducto(state.recetaProducto).nombre);
+        toast('Receta actualizada. El descuento de inventario usara la nueva escandallo.', 'ok');
+    }
+};
+
+document.addEventListener('click', function (ev) {
+    const el = ev.target.closest('[data-action]');
+    if (!el) return;
+    const fn = ACCIONES[el.dataset.action];
+    if (!fn) return;
+    ev.preventDefault();
+    fn(el, ev);
+});
+
+document.addEventListener('input', function (ev) {
+    const t = ev.target;
+    if (t.dataset && t.dataset.nota) {
+        state.notas[t.dataset.nota] = t.value;
+        renderCart();
+    }
+    if (t.dataset && t.dataset.filtro === 'insumos') {
+        state.filtroSearchInsumo = t.value;
+        const tbody = $('#insumos-tbody');
+        if (tbody) tbody.innerHTML = cuerpoTablaInsumos();
+    }
+    if (t.dataset && t.dataset.filtro === 'auditoria') {
+        state.filtroAuditoria = t.value;
+        const pos = t.selectionStart;
+        renderAdminAuditoria();
+        const nuevo = $('[data-filtro="auditoria"]');
+        if (nuevo) { nuevo.focus(); nuevo.setSelectionRange(pos, pos); }
+    }
+});
+
+document.addEventListener('change', function (ev) {
+    const t = ev.target;
+    if (!t.dataset) return;
+
+    if (t.dataset.filtro === 'categoria') {
+        state.filtroCategoriaInsumo = t.value;
+        renderVistaInsumos();
+    }
+    if (t.dataset.kardex) {
+        state.kardexFiltro[t.dataset.kardex] = t.value;
+        renderVistaKardex();
+    }
+    if (t.dataset.compra) {
+        const idx = Number(t.dataset.idx);
+        if (t.dataset.compra === 'insumo') {
+            state.compraRows[idx].id_insumo = t.value;
+            state.compraRows[idx].costo = getInsumo(t.value).costo_unitario;
+            const inputCosto = $('[data-compra="costo"][data-idx="' + idx + '"]');
+            if (inputCosto) inputCosto.value = getInsumo(t.value).costo_unitario;
+        }
+        if (t.dataset.compra === 'cantidad') state.compraRows[idx].cantidad = parseFloat(t.value || 0);
+        if (t.dataset.compra === 'costo') state.compraRows[idx].costo = parseFloat(t.value || 0);
+    }
+    if (t.dataset.precio) {
+        const prod = getProducto(t.dataset.precio);
+        const nuevo = parseFloat(t.value || 0);
+        if (!isNaN(nuevo) && nuevo >= 0) {
+            prod.precio_venta = round2(nuevo);
+            logAudit('ACTUALIZAR_PRECIO', 'producto', prod.nombre + ' -> ' + money(prod.precio_venta));
+            renderAdminMenu();
+        }
+    }
+    if (t.dataset.receta) {
+        const prod = getProducto(state.recetaProducto);
+        const par = prod.receta[Number(t.dataset.idx)];
+        if (t.dataset.receta === 'insumo') par[0] = t.value;
+        if (t.dataset.receta === 'cantidad') par[1] = parseFloat(t.value || 0);
+    }
+    if (t.dataset.turno) {
+        const p = DB.personal.find(x => x.id_personal === Number(t.dataset.turno));
+        p.turno = t.value;
+        logAudit('ASIGNAR_TURNO', 'turno_personal', p.nombre + ' -> ' + t.value);
+        toast('Turno actualizado para ' + p.nombre + '.', 'ok');
+    }
+});
+
+$('#app-modal').addEventListener('click', function (ev) {
+    if (ev.target === this) closeModal();
+});
+
+document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape') closeModal();
+    if (ev.key === 'Enter' && $('#login-screen').style.display !== 'none') doLogin();
+});
+
+init();
+</script>
+</body>
+</html>
